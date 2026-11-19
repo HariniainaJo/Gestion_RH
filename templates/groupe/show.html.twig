@@ -1,0 +1,106 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails du groupe - {{ groupe.nomGroupe }}{% endblock %}
+{% block page_title %}Gestion du groupe{% endblock %}
+
+{% block body %}
+<div style="display: grid; grid-template-columns: 1fr 2fr; gap: 2rem;">
+    <!-- Sidebar: Group Info & Add Member -->
+    <div>
+        <div class="card" style="margin-bottom: 2rem;">
+            <h3 style="font-weight: 700; margin-bottom: 1.5rem;">Informations</h3>
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+                <div>
+                    <label style="display: block; font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem;">Nom du groupe</label>
+                    <div style="font-weight: 700; font-size: 1.1rem; color: var(--primary);">{{ groupe.nomGroupe }}</div>
+                </div>
+                <div>
+                    <label style="display: block; font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem;">Type</label>
+                    <span class="badge" style="background: var(--bg-main);">{{ groupe.typeGroupe }}</span>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div>
+                        <label style="display: block; font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem;">Date Début</label>
+                        <div style="font-weight: 600;">{{ groupe.dateDebut ? groupe.dateDebut|date('d/m/Y') : '-' }}</div>
+                    </div>
+                    <div>
+                        <label style="display: block; font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem;">Date Fin</label>
+                        <div style="font-weight: 600;">{{ groupe.dateFin ? groupe.dateFin|date('d/m/Y') : '-' }}</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 2rem; display: flex; gap: 0.5rem;">
+                <a href="{{ path('app_groupe_edit', {'id': groupe.id}) }}" class="btn btn-primary" style="flex: 1;">Modifier</a>
+                <a href="{{ path('app_groupe_index') }}" class="btn" style="background: var(--bg-main); flex: 1;">Retour</a>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3 style="font-weight: 700; margin-bottom: 1.5rem;">Ajouter un membre</h3>
+            <form action="{{ path('app_groupe_add_member', {'id': groupe.id}) }}" method="post">
+                <div class="form-group">
+                    <select name="employe_id" class="form-input" required>
+                        <option value="">Sélectionner un employé...</option>
+                        {% for emp in all_employes %}
+                            {% if emp not in groupe.employes %}
+                                <option value="{{ emp.id }}">{{ emp.nom }} {{ emp.prenom }} ({{ emp.poste.libelle }})</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary" style="margin-top: 1rem; width: 100%;">
+                    <i class="fas fa-plus" style="margin-right: 8px;"></i> Affecter au groupe
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main: Members List -->
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+            <h3 style="font-weight: 700;">Liste des membres ({{ groupe.employes|length }})</h3>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Employé</th>
+                        <th>Poste</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for member in groupe.employes %}
+                        <tr>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                    <div style="width: 32px; height: 32px; background: #f1f5f9; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem; color: var(--text-muted);">
+                                        {{ member.nom|first }}
+                                    </div>
+                                    <div style="font-weight: 600;">{{ member.nom }} {{ member.prenom }}</div>
+                                </div>
+                            </td>
+                            <td>{{ member.poste.libelle }}</td>
+                            <td>
+                                <form action="{{ path('app_groupe_remove_member', {'id': groupe.id, 'employe_id': member.id}) }}" method="post" onsubmit="return confirm('Retirer ce membre du groupe ?');">
+                                    <button type="submit" class="btn" style="background: #fee2e2; color: #991b1b; padding: 0.4rem; border-radius: 6px;">
+                                        <i class="fas fa-user-minus fa-xs"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="3" style="text-align: center; padding: 3rem; color: var(--text-muted);">
+                                Aucun membre dans ce groupe. Utilisez le formulaire à gauche pour en ajouter.
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

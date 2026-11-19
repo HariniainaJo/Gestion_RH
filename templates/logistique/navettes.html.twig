@@ -1,0 +1,104 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des navettes - Zanova GRH{% endblock %}
+{% block page_title %}Logistique & Transport{% endblock %}
+
+{% block body %}
+    <!-- Barre de filtrage -->
+    <div class="card" style="margin-bottom: 1.5rem;">
+        <div style="display: flex; gap: 1.5rem; align-items: flex-end; flex-wrap: wrap;">
+            <div style="flex: 1;">
+                <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.5rem;">Rechercher une navette (Code, axe...)</label>
+                <div style="position: relative;">
+                    <i class="fas fa-search" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-muted);"></i>
+                    <input type="text" id="filterSearch" class="form-input" placeholder="Code navette, nom de l'axe, ville..." style="padding-left: 2.75rem;">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+            <h3 style="font-weight: 700;">Flotte de navettes</h3>
+            <div style="display: flex; gap: 1rem;">
+                <a href="{{ path('app_axe_new') }}" class="btn" style="background: var(--bg-main); width: auto; padding: 0.6rem 1.25rem;">
+                    <i class="fas fa-route" style="margin-right: 8px;"></i> Nouvel axe
+                </a>
+                <a href="{{ path('app_navette_new') }}" class="btn btn-primary" style="width: auto; padding: 0.6rem 1.25rem;">
+                    <i class="fas fa-plus" style="margin-right: 8px;"></i> Nouvelle navette
+                </a>
+            </div>
+        </div>
+
+
+    <div class="table-container">
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Code Navette</th>
+                    <th>Axe / Trajet</th>
+                    <th>Détails Trajet</th>
+                    <th>Capacité</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for navette in navettes %}
+                    <tr>
+                        <td style="font-weight: 700; color: var(--primary);">{{ navette.codeNavette }}</td>
+                        <td style="font-weight: 600;">{{ navette.axe.nomAxe }}</td>
+                        <td style="font-size: 0.875rem;">
+                            <i class="fas fa-map-marker-alt" style="color: #ef4444; margin-right: 5px;"></i> {{ navette.axe.pointDepart }} 
+                            <i class="fas fa-long-arrow-alt-right" style="margin: 0 8px; color: var(--text-muted);"></i>
+                            <i class="fas fa-flag-checkered" style="color: #10b981; margin-right: 5px;"></i> {{ navette.axe.pointArrivee }}
+                        </td>
+                        <td>
+                             <div style="display: flex; align-items: center; gap: 8px;">
+                                <div style="flex: 1; height: 6px; background: var(--bg-main); border-radius: 3px; min-width: 60px;">
+                                    <div style="width: {{ (navette.employes|length / navette.capacite * 100)|round }}%; height: 100%; background: var(--primary); border-radius: 3px;"></div>
+                                </div>
+                                <span style="font-size: 0.75rem; font-weight: 600;">{{ navette.employes|length }}/{{ navette.capacite }}</span>
+                             </div>
+                        </td>
+                        <td>
+                            <a href="{{ path('app_navette_show', {'id': navette.id}) }}" class="btn" style="background: var(--bg-main); padding: 0.5rem; width: 32px; height: 32px; border-radius: 8px;">
+                                <i class="fas fa-users" style="font-size: 0.75rem;"></i>
+                            </a>
+                        </td>
+
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="5" style="text-align: center; padding: 3rem; color: var(--text-muted);">
+                            Aucune navette configurée.
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+document.addEventListener('turbo:load', function() {
+    const searchInput = document.getElementById('filterSearch');
+    const tableRows = document.querySelectorAll('tbody tr:not(.no-results)');
+
+    function filterTable() {
+        const searchTerm = searchInput.value.toLowerCase();
+
+        tableRows.forEach(row => {
+            const text = row.innerText.toLowerCase();
+            if (text.includes(searchTerm)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    }
+
+    if (searchInput) searchInput.addEventListener('input', filterTable);
+});
+</script>
+{% endblock %}
+

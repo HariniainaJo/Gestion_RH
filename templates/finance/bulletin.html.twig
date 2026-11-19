@@ -1,0 +1,88 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Bulletin de Paie - {{ paye.employe.nom }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        @media print {
+            .sidebar, header, .btn, .nav-link { display: none !important; }
+            .main-content { margin-left: 0 !important; padding: 0 !important; }
+            .card { border: none !important; box-shadow: none !important; }
+        }
+        .payslip {
+            font-family: 'Courier New', Courier, monospace;
+            padding: 2rem;
+            border: 2px solid #000;
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            color: black;
+        }
+        .header-payslip {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 2px solid #000;
+            padding-bottom: 1rem;
+            margin-bottom: 2rem;
+        }
+        .line {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+        .total-line {
+            border-top: 1px solid #000;
+            margin-top: 1rem;
+            padding-top: 0.5rem;
+            font-weight: bold;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div style="margin-bottom: 1rem; text-align: right;">
+    <button onclick="window.print()" class="btn btn-primary">
+        <i class="fas fa-print"></i> Imprimer / Export PDF
+    </button>
+</div>
+
+<div class="payslip">
+    <div class="header-payslip">
+        <div>
+            <h1 style="font-size: 1.5rem; margin: 0;">ZANOVA GRH</h1>
+            <p>Antananarivo, Madagascar</p>
+        </div>
+        <div style="text-align: right;">
+            <p><b>BULLETIN DE PAIE</b></p>
+            <p>Période : {{ paye.mois }}/{{ paye.annee }}</p>
+        </div>
+    </div>
+
+    <div style="margin-bottom: 2rem;">
+        <p><b>SALARIÉ :</b> {{ paye.employe.nom }} {{ paye.employe.prenom }}</p>
+        <p><b>POSTE :</b> {{ paye.employe.poste.libelle }}</p>
+        <p><b>MATRICULE :</b> #EMP-{{ paye.employe.id }}</p>
+    </div>
+
+    <div class="line"><span>Salaire de base</span> <span>{{ paye.employe.poste.salaireBase|number_format(0, ',', ' ') }} Ar</span></div>
+    <div class="line"><span>Total des primes</span> <span style="font-weight: bold; color: #166534;">+{{ paye.totalPrime|number_format(0, ',', ' ') }} Ar</span></div>
+    
+    <div style="margin-top: 1.5rem;">
+        <div class="line" style="color: #555;"><span>Cotisation CNAPS</span> <span>-{{ cnaps|default(0)|number_format(0, ',', ' ') }} Ar</span></div>
+        <div class="line" style="color: #555;"><span>Assurance OSTIE</span> <span>-{{ ostie|default(0)|number_format(0, ',', ' ') }} Ar</span></div>
+        <div class="line" style="color: #555;"><span>Impôt IRSA</span> <span>-{{ irsa|default(0)|number_format(0, ',', ' ') }} Ar</span></div>
+        <div class="line" style="color: #555;"><span>Avances sur salaire</span> <span>-{{ totalAvance|default(0)|number_format(0, ',', ' ') }} Ar</span></div>
+    </div>
+
+    <div class="line total-line" style="font-size: 1.25rem;">
+        <span>NET À PAYER</span>
+        <span>{{ paye.salaireNet|number_format(0, ',', ' ') }} Ar</span>
+    </div>
+
+    <div style="margin-top: 4rem; display: flex; justify-content: space-around;">
+        <div style="text-align: center; font-size: 0.8rem;">Signature Employeur<br><br>_________________</div>
+        <div style="text-align: center; font-size: 0.8rem;">Signature Employé<br><br>_________________</div>
+    </div>
+</div>
+{% endblock %}

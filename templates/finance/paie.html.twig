@@ -1,0 +1,99 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion de la paie - Zanova GRH{% endblock %}
+{% block page_title %}Paie & Rémunération{% endblock %}
+
+{% block body %}
+    <!-- Barre de filtrage -->
+    <div class="card" style="margin-bottom: 1.5rem;">
+        <div style="display: flex; gap: 1.5rem; align-items: flex-end; flex-wrap: wrap;">
+            <div style="flex: 1;">
+                <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.5rem;">Rechercher un bulletin (Employé...)</label>
+                <div style="position: relative;">
+                    <i class="fas fa-search" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-muted);"></i>
+                    <input type="text" id="filterSearch" class="form-input" placeholder="Nom de l'employé..." style="padding-left: 2.75rem;">
+                </div>
+            </div>
+        </div>
+    </div>
+
+<div class="card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+        <h3 style="font-weight: 700;">Bulletins de paie mensuels</h3>
+        <div style="display: flex; gap: 1rem;">
+            <select class="form-input" style="width: auto;">
+                <option>Janvier 2026</option>
+                <option>Décembre 2025</option>
+            </select>
+            <a href="{{ path('app_finance_paie_preview') }}" class="btn btn-primary" style="width: auto; padding: 0.6rem 1.25rem;">
+                <i class="fas fa-calculator" style="margin-right: 8px;"></i> Calculer la paie
+            </a>
+
+
+        </div>
+    </div>
+
+    <div class="table-container">
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Employé</th>
+                    <th>Salaire Brut</th>
+                    <th>Primes</th>
+                    <th>Retenues</th>
+                    <th>Salaire Net</th>
+                    <th>Date Paiement</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for paye in payes %}
+                    <tr>
+                        <td style="font-weight: 600;">{{ paye.employe.nom }} {{ paye.employe.prenom }}</td>
+                        <td>{{ paye.salaireBrut }} Ar</td>
+                        <td style="color: #10b981;">+{{ paye.totalPrime }} Ar</td>
+                        <td style="color: #ef4444;">-{{ paye.retenue }} Ar</td>
+                        <td style="font-weight: 700;">{{ paye.salaireNet }} Ar</td>
+                        <td>{{ paye.datePaiement|date('d/m/Y') }}</td>
+                        <td>
+                            <a href="{{ path('app_finance_bulletin', {'id': paye.id}) }}" class="btn" style="background: var(--bg-main); padding: 0.5rem; width: 32px; height: 32px; border-radius: 8px;">
+                                <i class="fas fa-eye" style="font-size: 0.75rem;"></i>
+                            </a>
+                        </td>
+
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: 3rem; color: var(--text-muted);">
+                            Aucune donnée de paie pour cette période.
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+document.addEventListener('turbo:load', function() {
+    const searchInput = document.getElementById('filterSearch');
+    const tableRows = document.querySelectorAll('tbody tr:not(.no-results)');
+
+    function filterTable() {
+        const searchTerm = searchInput.value.toLowerCase();
+
+        tableRows.forEach(row => {
+            const text = row.innerText.toLowerCase();
+            if (text.includes(searchTerm)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    }
+
+    if (searchInput) searchInput.addEventListener('input', filterTable);
+});
+</script>
+{% endblock %}
+

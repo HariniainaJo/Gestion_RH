@@ -1,0 +1,102 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Structure Organisationnelle - Zanova GRH{% endblock %}
+{% block page_title %}Structure & Hiérarchie{% endblock %}
+
+{% block body %}
+<!-- Barre de filtrage globale -->
+<div style="background: var(--bg-main); padding: 1.25rem; border-radius: 12px; margin-bottom: 2rem;">
+    <div style="position: relative;">
+        <i class="fas fa-search" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-muted);"></i>
+        <input type="text" id="globalStructureSearch" class="form-input" placeholder="Rechercher une direction, un service ou un poste..." style="padding-left: 2.75rem;">
+    </div>
+</div>
+
+<div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5rem;">
+
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h3 style="font-weight: 700;">Directions</h3>
+            <a href="{{ path('app_direction_new') }}" class="btn" style="background: var(--bg-main); padding: 0.5rem; width: 32px; height: 32px; border-radius: 8px;"><i class="fas fa-plus"></i></a>
+        </div>
+        <ul style="list-style: none; padding: 0;">
+            {% for dir in directions %}
+                <li style="padding: 0.75rem; background: var(--bg-main); border-radius: 12px; margin-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-weight: 600;">{{ dir.nomDirection }}</span>
+                    <div style="display: flex; gap: 0.5rem; align-items: center;">
+                        <span class="badge" style="background: white;">{{ dir.services|length }} serv.</span>
+                        <a href="{{ path('app_direction_edit', {'id': dir.id}) }}" style="color: var(--text-muted);"><i class="fas fa-edit"></i></a>
+                    </div>
+                </li>
+            {% else %}
+                <li style="color: var(--text-muted); font-size: 0.875rem;">Aucune direction</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h3 style="font-weight: 700;">Services</h3>
+            <a href="{{ path('app_service_new') }}" class="btn" style="background: var(--bg-main); padding: 0.5rem; width: 32px; height: 32px; border-radius: 8px;"><i class="fas fa-plus"></i></a>
+        </div>
+        <ul style="list-style: none; padding: 0;">
+            {% for serv in services %}
+                <li style="padding: 0.75rem; background: var(--bg-main); border-radius: 12px; margin-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <div style="font-weight: 600;">{{ serv.nomService }}</div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted);">{{ serv.direction.nomDirection }}</div>
+                    </div>
+                    <a href="{{ path('app_service_edit', {'id': serv.id}) }}" style="color: var(--text-muted);"><i class="fas fa-edit"></i></a>
+                </li>
+            {% else %}
+                <li style="color: var(--text-muted); font-size: 0.875rem;">Aucun service</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h3 style="font-weight: 700;">Postes</h3>
+            <a href="{{ path('app_poste_new') }}" class="btn" style="background: var(--bg-main); padding: 0.5rem; width: 32px; height: 32px; border-radius: 8px;"><i class="fas fa-plus"></i></a>
+        </div>
+
+        <ul style="list-style: none; padding: 0;">
+            {% for poste in postes %}
+                <li style="padding: 0.75rem; background: var(--bg-main); border-radius: 12px; margin-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <div style="font-weight: 600;">{{ poste.libelle }}</div>
+                        <div style="font-size: 0.75rem; color: var(--primary); font-weight: 600;">{{ poste.salaireBase }} Ar (Base)</div>
+                    </div>
+                    <a href="{{ path('app_poste_edit', {'id': poste.id}) }}" style="color: var(--text-muted);"><i class="fas fa-edit"></i></a>
+                </li>
+
+            {% else %}
+                <li style="color: var(--text-muted); font-size: 0.875rem;">Aucun poste</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+<script>
+
+document.addEventListener('turbo:load', function() {
+    const searchInput = document.getElementById('globalStructureSearch');
+    const listItems = document.querySelectorAll('ul li');
+
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+
+            listItems.forEach(item => {
+                const text = item.innerText.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    item.style.display = '';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+    }
+});
+</script>
+{% endblock %}
+

@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ is_edit ? 'Modifier une tranche IRSA' : 'Nouvelle tranche IRSA' }} - Zanova GRH{% endblock %}
+{% block page_title %}Barème IRSA{% endblock %}
+
+{% block body %}
+<div class="card" style="max-width: 600px; margin: 0 auto;">
+    <h3 style="margin-bottom: 2rem; font-weight: 700;">
+        {{ is_edit ? 'Modifier une tranche IRSA' : 'Nouvelle tranche IRSA' }}
+    </h3>
+
+    {% if form_errors(form) %}
+        <div class="alert alert-danger" style="margin-bottom: 1rem;">
+            {{ form_errors(form) }}
+        </div>
+    {% endif %}
+
+    {{ form_start(form) }}
+        <div class="form-group">
+            {{ form_label(form.salaireMin) }}
+            {{ form_widget(form.salaireMin) }}
+            {{ form_errors(form.salaireMin) }}
+        </div>
+        <div class="form-group" style="margin-top: 1rem;">
+            {{ form_label(form.salaireMax) }}
+            {{ form_widget(form.salaireMax) }}
+            {{ form_errors(form.salaireMax) }}
+            <small style="color: var(--text-muted);">Laisser vide pour une tranche sans limite supérieure.</small>
+        </div>
+        <div class="form-group" style="margin-top: 1rem;">
+            {{ form_label(form.taux) }}
+            {{ form_widget(form.taux) }}
+            {{ form_errors(form.taux) }}
+            <small style="color: var(--text-muted);">Ex: 0.20 = 20% appliqué au salaire brut de cette tranche.</small>
+        </div>
+
+        <div style="margin-top: 2rem; display: flex; justify-content: flex-end; gap: 1rem;">
+            <a href="{{ path('app_irsa_index') }}" class="btn" style="background: var(--bg-main);">Annuler</a>
+            <button class="btn btn-primary" style="padding-left: 2rem; padding-right: 2rem;">
+                {{ is_edit ? 'Mettre à jour' : 'Enregistrer' }}
+            </button>
+        </div>
+    {{ form_end(form) }}
+</div>
+{% endblock %}
+

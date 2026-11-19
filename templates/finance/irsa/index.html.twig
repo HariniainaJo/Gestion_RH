@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Barème IRSA - Zanova GRH{% endblock %}
+{% block page_title %}Barème IRSA{% endblock %}
+
+{% block body %}
+<div class="card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+        <h3 style="font-weight: 700;">Tranches IRSA</h3>
+        <a href="{{ path('app_irsa_new') }}" class="btn btn-primary" style="width: auto; padding: 0.5rem 1rem; font-size: 0.875rem;">
+            <i class="fas fa-plus"></i> Nouvelle tranche
+        </a>
+    </div>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Salaire min</th>
+                    <th>Salaire max</th>
+                    <th>Taux</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for tranche in tranches %}
+                    <tr>
+                        <td>{{ tranche.salaireMin }} Ar</td>
+                        <td>{{ tranche.salaireMax is not null ? tranche.salaireMax ~ ' Ar' : '∞' }}</td>
+                        <td>{{ (tranche.taux * 100)|number_format(2, ',', ' ') }} %</td>
+                        <td style="white-space: nowrap;">
+                            <a href="{{ path('app_irsa_edit', {'id': tranche.id}) }}" class="btn" style="background: var(--bg-main); padding: 0.4rem; border-radius: 6px;">
+                                <i class="fas fa-edit fa-xs"></i>
+                            </a>
+                            <form method="post" action="{{ path('app_irsa_delete', {'id': tranche.id}) }}" style="display: inline-block;" onsubmit="return confirm('Supprimer cette tranche IRSA ?');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete_irsa_' ~ tranche.id) }}">
+                                <button class="btn" style="background: #f56565; color: white; padding: 0.4rem; border-radius: 6px;">
+                                    <i class="fas fa-trash-alt fa-xs"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="4" style="text-align: center; color: var(--text-muted); padding: 2rem;">
+                            Aucune tranche IRSA définie.
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+

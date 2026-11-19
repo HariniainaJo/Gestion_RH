@@ -1,0 +1,165 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails Candidat - {{ candidat.nom }}{% endblock %}
+{% block page_title %}Profil Candidat{% endblock %}
+
+{% block body %}
+<div style="max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: 2rem;">
+    <!-- Header with Back Button and Status -->
+    <div style="display: flex; justify-content: space-between; align-items: center; background: white; padding: 1.5rem; border-radius: 20px; border: 1px solid var(--border-color);">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <a href="{{ path('app_recrutement_show', {'id': candidat.recrutement.id}) }}" class="btn" style="background: var(--bg-main); width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 12px;">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <div>
+                <h3 style="font-weight: 700; margin: 0; font-size: 1.25rem;">{{ candidat.nom|upper }} {{ candidat.prenom }}</h3>
+                <p style="color: var(--text-muted); font-size: 0.875rem; margin: 0;">Poste : <span style="font-weight: 600; color: var(--primary);">{{ candidat.recrutement.poste.libelle }}</span></p>
+            </div>
+        </div>
+        <div style="text-align: right;">
+            <span class="badge {{ candidat.statut == 'Accepté' or candidat.statut == 'Embauché' ? 'badge-success' : (candidat.statut == 'Refusé' ? 'badge-danger' : (candidat.statut == 'Présélectionné' ? 'badge-primary' : 'badge-warning')) }}" style="font-size: 0.9rem; padding: 0.6rem 1.25rem;">
+                {{ candidat.statut }}
+            </span>
+        </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 2rem;">
+        <!-- Left Column: Personal Info -->
+        <div class="card">
+            <h4 style="font-weight: 700; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem; color: var(--primary);">
+                <i class="fas fa-user-circle"></i> Informations Personnelles
+            </h4>
+            
+            <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+                <div>
+                    <label style="display: block; font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 0.4rem;">Date de naissance</label>
+                    <div style="font-weight: 600;">{{ candidat.dateNaissance ? candidat.dateNaissance|date('d/m/Y') : 'Non renseignée' }}</div>
+                </div>
+                <div>
+                    <label style="display: block; font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 0.4rem;">Situation Matrimoniale</label>
+                    <div style="font-weight: 600;">{{ candidat.situationMatrimoniale ?: 'Non renseignée' }}</div>
+                </div>
+                <div>
+                    <label style="display: block; font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 0.4rem;">Email</label>
+                    <div style="font-weight: 600;">{{ candidat.email }}</div>
+                </div>
+                <div>
+                    <label style="display: block; font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 0.4rem;">Contact</label>
+                    <div style="font-weight: 600;">{{ candidat.contact }}</div>
+                </div>
+                <div>
+                    <label style="display: block; font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 0.4rem;">Adresse</label>
+                    <div style="font-weight: 600;">{{ candidat.adresse ?: 'Non renseignée' }}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Documents and Actions -->
+        <div style="display: flex; flex-direction: column; gap: 2rem;">
+            <div class="card">
+                <h4 style="font-weight: 700; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem; color: var(--primary);">
+                    <i class="fas fa-file-alt"></i> Dossier de Candidature
+                </h4>
+                
+                <div style="background: var(--bg-main); padding: 1.5rem; border-radius: 12px; display: flex; align-items: center; justify-content: space-between;">
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <div style="width: 48px; height: 48px; background: white; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #ef4444; font-size: 1.25rem; box-shadow: var(--shadow-sm);">
+                            <i class="fas fa-file-pdf"></i>
+                        </div>
+                        <div>
+                            <div style="font-weight: 700;">Curriculum Vitae (CV)</div>
+                            <div style="font-size: 0.75rem; color: var(--text-muted);">{{ candidat.cvPath|split('.')|last|upper }} Document</div>
+                        </div>
+                    </div>
+                    <button type="button" onclick="openModal('{{ asset('uploads/' ~ candidat.cvPath) }}', '{{ candidat.cvPath|split('.')|last == 'pdf' ? 'pdf' : 'image' }}')" class="btn btn-primary" style="padding: 0.5rem 1rem;">
+                        <i class="fas fa-search-plus" style="margin-right: 8px;"></i> Visualiser
+                    </button>
+                </div>
+            </div>
+
+            <!-- Hiring Action Card -->
+            {% if candidat.statut == 'Accepté' %}
+            <div class="card" style="background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%); border: 1px solid #c7d2fe;">
+                <h4 style="font-weight: 700; margin-bottom: 1rem; color: #3730a3; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-briefcase"></i> Validation Finale
+                </h4>
+                <p style="font-size: 0.875rem; color: #4338ca; margin-bottom: 1.5rem;">
+                    Ce candidat a été accepté. Vous pouvez maintenant procéder à son intégration officielle en tant qu'employé de la société.
+                </p>
+                <a href="{{ path('app_candidat_hire', {'id': candidat.id}) }}" class="btn" style="background: #4338ca; color: white; width: 100%; height: 50px; font-weight: 700; display: flex; align-items: center; justify-content: center; border-radius: 12px; transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
+                    <i class="fas fa-user-check" style="margin-right: 10px;"></i> EMBAUCHER CE CANDIDAT
+                </a>
+            </div>
+            {% endif %}
+            
+            {% if candidat.statut == 'En attente' or candidat.statut == 'Présélectionné' %}
+            <div class="card">
+                <h4 style="font-weight: 700; margin-bottom: 1.5rem;">Changer le statut</h4>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+                    <form action="{{ path('app_candidat_status', {'id': candidat.id, 'status': 'Présélectionné'}) }}" method="post" data-turbo="false" style="{{ candidat.statut == 'Présélectionné' ? 'display:none' : '' }}">
+                        <input type="hidden" name="_token" value="{{ csrf_token('change-status' ~ candidat.id) }}">
+                        <button type="submit" class="btn" style="width: 100%; background: #e0f2fe; color: #0369a1;">Présélectionner</button>
+                    </form>
+                    <form action="{{ path('app_candidat_status', {'id': candidat.id, 'status': 'Accepté'}) }}" method="post" data-turbo="false">
+                        <input type="hidden" name="_token" value="{{ csrf_token('change-status' ~ candidat.id) }}">
+                        <button type="submit" class="btn" style="width: 100%; background: #dcfce7; color: #166534;">Accepter le dossier</button>
+                    </form>
+                    <form action="{{ path('app_candidat_status', {'id': candidat.id, 'status': 'Refusé'}) }}" method="post" data-turbo="false">
+                        <input type="hidden" name="_token" value="{{ csrf_token('change-status' ~ candidat.id) }}">
+                        <button type="submit" class="btn" style="width: 100%; background: #fee2e2; color: #991b1b;">Refuser le dossier</button>
+                    </form>
+                </div>
+            </div>
+            {% endif %}
+            
+            {% if candidat.statut == 'Embauché' %}
+            <div class="card" style="background: #f0fdf4; border: 1px solid #bbf7d0;">
+                <div style="display: flex; align-items: center; gap: 1rem; color: #166534;">
+                    <i class="fas fa-check-circle" style="font-size: 1.5rem;"></i>
+                    <div style="font-weight: 700;">Ce candidat a été officiellement embauché.</div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Modal logic reproduced for direct candidate view -->
+<div id="previewModal" style="display: none; position: fixed; inset: 0; z-index: 9999; background: rgba(0,0,0,0.5); backdrop-filter: blur(8px); align-items: center; justify-content: center; padding: 2rem;">
+    <div style="background: white; border-radius: 20px; width: 100%; max-width: 950px; height: 90vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);">
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 1.5rem; border-bottom: 1px solid #f1f5f9;">
+            <h3 id="modalTitle" style="font-weight: 700; margin: 0;">Aperçu du CV</h3>
+            <button type="button" onclick="closeModal()" style="background: #f1f5f9; border: none; padding: 0.5rem; width: 32px; height: 32px; border-radius: 8px; cursor: pointer; color: #64748b;">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div id="modalContent" style="flex: 1; overflow: hidden; display: flex; justify-content: center; background: #f8fafc; position: relative;"></div>
+    </div>
+</div>
+
+<script>
+    function openModal(url, type) {
+        const modal = document.getElementById('previewModal');
+        const content = document.getElementById('modalContent');
+        const title = document.getElementById('modalTitle');
+        content.innerHTML = ''; 
+        if (type === 'image') {
+            title.innerText = 'Aperçu du CV - Image';
+            content.style.overflow = 'auto';
+            content.innerHTML = `<img src="${url}" style="max-width: 100%; border-radius: 12px; margin: auto; display: block;">`;
+        } else {
+            title.innerText = 'Aperçu du CV - Document PDF';
+            content.style.overflow = 'hidden';
+            content.innerHTML = `<iframe src="${url}" style="width: 100%; height: 100%; border: none;"></iframe>`;
+        }
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+    function closeModal() {
+        const modal = document.getElementById('previewModal');
+        document.getElementById('modalContent').innerHTML = ''; 
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+</script>
+{% endblock %}

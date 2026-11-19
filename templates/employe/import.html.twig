@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Import des Employés{% endblock %}
+{% block page_title %}Importer des Employés (CSV){% endblock %}
+
+{% block body %}
+    <div class="card" style="max-width: 600px; margin: 0 auto;">
+        <h3 style="font-weight: 700; margin-bottom: 1.5rem;">Importer un fichier CSV</h3>
+        
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 2rem;">
+            Le fichier CSV doit respecter le format suivant (délimiteur : point-virgule) :<br>
+            <strong>Nom; Prénom; Email; Contact; Date Naissance (Y-m-d); Adresse; Situation; Date Embauche (Y-m-d); Poste; URL Photo; URL CIN; URL CV</strong>
+        </p>
+
+        <form method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="csv_file" class="form-label">Choisir le fichier CSV</label>
+                <input type="file" name="csv_file" id="csv_file" class="form-input" required accept=".csv">
+            </div>
+
+            <div style="margin-top: 2rem; display: flex; justify-content: flex-end; gap: 1rem;">
+                <a href="{{ path('app_employe_index') }}" class="btn" style="background: var(--bg-main);">Annuler</a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-file-import" style="margin-right: 8px;"></i> Importer
+                </button>
+            </div>
+        </form>
+
+        <div style="margin-top: 2rem; padding: 1rem; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
+            <p style="font-weight: 600; margin-bottom: 0.5rem; font-size: 0.9rem;">Fichier d'exemple</p>
+            <a href="{{ asset('import_employes.csv') }}" download class="btn" style="background: white; border: 1px solid #cbd5e1; font-size: 0.85rem;">
+                <i class="fas fa-download"></i> Télécharger le modèle CSV
+            </a>
+        </div>
+    </div>
+{% endblock %}

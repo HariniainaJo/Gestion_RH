@@ -1,0 +1,107 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Cotisations - Zanova GRH{% endblock %}
+{% block page_title %}Cotisations sociales & impôts{% endblock %}
+
+{% block body %}
+<div style="display: grid; grid-template-columns: 3fr 2fr; gap: 1.5rem;">
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+            <h3 style="font-weight: 700;">Liste des cotisations</h3>
+            <a href="{{ path('app_cotisation_new') }}" class="btn btn-primary" style="width: auto; padding: 0.5rem 1rem; font-size: 0.875rem;">
+                <i class="fas fa-plus"></i> Nouvelle cotisation
+            </a>
+        </div>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Code</th>
+                        <th>Nom</th>
+                        <th>Taux</th>
+                        <th>Plafond</th>
+                        <th>Seuil</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cotisation in cotisations %}
+                        <tr>
+                            <td style="font-weight: 600;">{{ cotisation.code }}</td>
+                            <td>{{ cotisation.nom }}</td>
+                            <td>{{ cotisation.taux }} ({{ (cotisation.taux * 100)|number_format(2, ',', ' ') }} %)</td>
+                            <td>{{ cotisation.plafond is not null ? cotisation.plafond ~ ' Ar' : '-' }}</td>
+                            <td>{{ cotisation.seuil is not null ? cotisation.seuil ~ ' Ar' : '-' }}</td>
+                            <td style="white-space: nowrap;">
+                                <a href="{{ path('app_cotisation_edit', {'id': cotisation.id}) }}" class="btn" style="background: var(--bg-main); padding: 0.4rem; border-radius: 6px;">
+                                    <i class="fas fa-edit fa-xs"></i>
+                                </a>
+                                <form method="post" action="{{ path('app_cotisation_delete', {'id': cotisation.id}) }}" style="display: inline-block;" onsubmit="return confirm('Supprimer cette cotisation ?');">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete_cotisation_' ~ cotisation.id) }}">
+                                    <button class="btn" style="background: #f56565; color: white; padding: 0.4rem; border-radius: 6px;">
+                                        <i class="fas fa-trash-alt fa-xs"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 2rem;">
+                                Aucune cotisation définie.
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h3 style="font-weight: 700;">Barème IRSA</h3>
+            <a href="{{ path('app_irsa_new') }}" class="btn btn-primary" style="width: auto; padding: 0.5rem 1rem; font-size: 0.875rem;">
+                <i class="fas fa-plus"></i> Nouvelle tranche
+            </a>
+        </div>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Salaire min</th>
+                        <th>Salaire max</th>
+                        <th>Taux</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for tranche in tranches %}
+                        <tr>
+                            <td>{{ tranche.salaireMin }} Ar</td>
+                            <td>{{ tranche.salaireMax is not null ? tranche.salaireMax ~ ' Ar' : '∞' }}</td>
+                            <td>{{ (tranche.taux * 100)|number_format(2, ',', ' ') }} %</td>
+                            <td style="white-space: nowrap;">
+                                <a href="{{ path('app_irsa_edit', {'id': tranche.id}) }}" class="btn" style="background: var(--bg-main); padding: 0.4rem; border-radius: 6px;">
+                                    <i class="fas fa-edit fa-xs"></i>
+                                </a>
+                                <form method="post" action="{{ path('app_irsa_delete', {'id': tranche.id}) }}" style="display: inline-block;" onsubmit="return confirm('Supprimer cette tranche IRSA ?');">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete_irsa_' ~ tranche.id) }}">
+                                    <button class="btn" style="background: #f56565; color: white; padding: 0.4rem; border-radius: 6px;">
+                                        <i class="fas fa-trash-alt fa-xs"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="4" style="text-align: center; color: var(--text-muted); padding: 2rem;">
+                                Aucune tranche IRSA définie.
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

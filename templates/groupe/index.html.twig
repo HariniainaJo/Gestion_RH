@@ -1,0 +1,118 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Groupes & Équipes - Zanova GRH{% endblock %}
+{% block page_title %}Organisation des équipes{% endblock %}
+
+{% block body %}
+    <!-- Barre de filtrage -->
+    <div class="card" style="margin-bottom: 1.5rem;">
+        <div style="display: flex; gap: 1.5rem; align-items: flex-end; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 250px;">
+                <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.5rem;">Rechercher un groupe</label>
+                <div style="position: relative;">
+                    <i class="fas fa-search" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-muted);"></i>
+                    <input type="text" id="filterSearch" class="form-input" placeholder="Nom du groupe..." style="padding-left: 2.75rem;">
+                </div>
+            </div>
+            <div style="width: 200px;">
+                <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.5rem;">Type de groupe</label>
+                <select id="filterType" class="form-input">
+                    <option value="all">Tous les types</option>
+                    <option value="SERVICE">Service</option>
+                    <option value="EQUIPE">Équipe</option>
+                    <option value="PROJET">Projet</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+            <h3 style="font-weight: 700;">Liste des groupes</h3>
+            <a href="{{ path('app_groupe_new') }}" class="btn btn-primary" style="width: auto; padding: 0.6rem 1.25rem;">
+                <i class="fas fa-plus" style="margin-right: 8px;"></i> Créer un groupe
+            </a>
+        </div>
+
+
+    <div class="table-container">
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Nom du groupe</th>
+                    <th>Type</th>
+                    <th>Date Début</th>
+                    <th>Date Fin</th>
+                    <th>Membres</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for groupe in groupes %}
+                    <tr>
+                        <td style="font-weight: 600;">{{ groupe.nomGroupe }}</td>
+                        <td>
+                             <span class="badge" style="background: var(--bg-main);">{{ groupe.typeGroupe }}</span>
+                        </td>
+                        <td>{{ groupe.dateDebut ? groupe.dateDebut|date('d/m/Y') : '-' }}</td>
+                        <td>{{ groupe.dateFin ? groupe.dateFin|date('d/m/Y') : '-' }}</td>
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 4px;">
+                                <i class="fas fa-user-friends" style="color: var(--text-muted); font-size: 0.75rem;"></i>
+                                <span style="font-size: 0.875rem; font-weight: 600;">{{ groupe.employes|length }}</span>
+                            </div>
+                        </td>
+                        <td>
+                            <a href="{{ path('app_groupe_show', {'id': groupe.id}) }}" class="btn" style="background: var(--bg-main); padding: 0.4rem; border-radius: 6px;" title="Voir / Gérer membres">
+                                <i class="far fa-eye fa-xs"></i>
+                            </a>
+                            <a href="{{ path('app_groupe_edit', {'id': groupe.id}) }}" class="btn" style="background: var(--bg-main); padding: 0.4rem; border-radius: 6px;" title="Modifier">
+                                <i class="far fa-edit fa-xs"></i>
+                            </a>
+
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="6" style="text-align: center; padding: 3rem; color: var(--text-muted);">
+                            Aucun groupe ou équipe défini.
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+document.addEventListener('turbo:load', function() {
+    const searchInput = document.getElementById('filterSearch');
+    const typeSelect = document.getElementById('filterType');
+    const tableRows = document.querySelectorAll('tbody tr:not(.no-results)');
+
+    function filterTable() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const selectedType = typeSelect.value;
+
+        tableRows.forEach(row => {
+            const text = row.innerText.toLowerCase();
+            const typeBadge = row.querySelector('.badge');
+            const type = typeBadge ? typeBadge.innerText.trim() : 'all';
+            
+            const matchesSearch = text.includes(searchTerm);
+            const matchesType = (selectedType === 'all' || type === selectedType);
+
+            if (matchesSearch && matchesType) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    }
+
+    if (searchInput) searchInput.addEventListener('input', filterTable);
+    if (typeSelect) typeSelect.addEventListener('change', filterTable);
+});
+</script>
+{% endblock %}
+

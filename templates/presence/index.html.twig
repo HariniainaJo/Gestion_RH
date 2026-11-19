@@ -1,0 +1,107 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Présences & Absences - Zanova GRH{% endblock %}
+{% block page_title %}Présences RH{% endblock %}
+
+{% block body %}
+    <!-- Barre de filtrage -->
+    <div class="card" style="margin-bottom: 1.5rem;">
+        <div style="display: flex; gap: 1.5rem; align-items: flex-end; flex-wrap: wrap;">
+            <div style="flex: 1;">
+                <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.5rem;">Rechercher un événement (Employé...)</label>
+                <div style="position: relative;">
+                    <i class="fas fa-search" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-muted);"></i>
+                    <input type="text" id="filterSearch" class="form-input" placeholder="Nom de l'employé, type..." style="padding-left: 2.75rem;">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+            <h3 style="font-weight: 700;">Registre des événements</h3>
+            <a href="{{ path('app_presence_new') }}" class="btn btn-primary" style="width: auto; padding: 0.6rem 1.25rem;">
+                <i class="fas fa-plus" style="margin-right: 8px;"></i> Signaler absence/retard
+            </a>
+        </div>
+
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Employé</th>
+                    <th>Type</th>
+                    <th>Date</th>
+                    <th>Justification</th>
+                    <th>Statut</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for presence in presences %}
+                    <tr>
+                        <td style="font-weight: 600;">{{ presence.employe.nom }} {{ presence.employe.prenom }}</td>
+                        <td>
+                            <span class="badge {{ presence.typeEvenement == 'ABSENCE' ? 'badge-danger' : 'badge-warning' }}">
+                                {{ presence.typeEvenement }}
+                            </span>
+                        </td>
+                        <td>{{ presence.dateEvenement|date('d/m/Y') }}</td>
+                        <td style="font-size: 0.875rem; color: var(--text-muted);">{{ presence.justification }}</td>
+                        <td>
+                            {% if presence.justifie %}
+                                <span class="badge badge-success">Justifié</span>
+                            {% else %}
+                                <span class="badge badge-danger">Non justifié</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div style="display: flex; gap: 0.5rem; align-items: center;">
+                                <a href="{{ path('app_presence_edit', {'id': presence.id}) }}" class="btn" style="background: var(--bg-main); padding: 0.4rem; border-radius: 6px; color: #3b82f6;" title="Modifier">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                {% if not presence.justifie %}
+                                    <form method="post" action="{{ path('app_presence_justify', {'id': presence.id}) }}">
+                                        <button class="btn" style="background: var(--bg-main); padding: 0.4rem 0.8rem; font-size: 0.75rem;">
+                                            Justifier
+                                        </button>
+                                    </form>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="6" style="text-align: center; padding: 3rem; color: var(--text-muted);">
+                            Aucun incident de présence enregistré.
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+document.addEventListener('turbo:load', function() {
+    const searchInput = document.getElementById('filterSearch');
+    const tableRows = document.querySelectorAll('tbody tr:not(.no-results)');
+
+    function filterTable() {
+        const searchTerm = searchInput.value.toLowerCase();
+
+        tableRows.forEach(row => {
+            const text = row.innerText.toLowerCase();
+            if (text.includes(searchTerm)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    }
+
+    if (searchInput) searchInput.addEventListener('input', filterTable);
+});
+</script>
+{% endblock %}
+

@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+{% block title %}Nouvelle Prime{% endblock %}
+{% block page_title %}Performance{% endblock %}
+{% block body %}
+<div class="card" style="max-width: 500px; margin: 0 auto;">
+    <h3 style="margin-bottom: 2rem;">Paramétrer une prime</h3>
+    {{ form_start(form) }}
+        <div class="form-group">{{ form_label(form.nomPrime) }}{{ form_widget(form.nomPrime) }}</div>
+        <div class="form-group">{{ form_label(form.montantMax) }}{{ form_widget(form.montantMax) }}</div>
+        <div class="form-group">{{ form_label(form.formule) }}{{ form_widget(form.formule) }}</div>
+        <div class="form-group" style="display: flex; align-items: center; gap: 0.5rem;">
+            {{ form_widget(form.collectif) }} {{ form_label(form.collectif) }}
+        </div>
+        
+        <div class="form-group" style="margin-top: 1.5rem;">
+            {{ form_label(form.kpis) }}
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-top: 0.5rem;">
+                {% for child in form.kpis %}
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        {{ form_widget(child) }} {{ form_label(child) }}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        
+        <div style="margin-top: 2rem; display: flex; gap: 1rem;">
+            <button class="btn btn-primary" style="width: auto;">Enregistrer</button>
+            <a href="{{ path('app_finance_perf') }}" class="btn" style="background: var(--bg-main); width: auto;">Annuler</a>
+        </div>
+    {{ form_end(form) }}
+</div>
+{% endblock %}

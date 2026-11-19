@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Évaluations Mensuelles - {{ mois }}/{{ annee }}{% endblock %}
+{% block page_title %}Évaluations de Performances{% endblock %}
+
+{% block body %}
+<div class="card">
+    <h3 style="margin-bottom: 2rem;">Saisie des objectifs : {{ "now"|date("F Y") }}</h3>
+    
+    <form action="{{ path('app_finance_evaluation') }}" method="post">
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 250px;">Employé</th>
+                        {% for kpi in kpis %}
+                            <th style="text-align: center;">{{ kpi.nomKpi }} <br> <span style="font-size: 0.75rem; font-weight: normal;">({{ kpi.valeurMin }}-{{ kpi.valeurMax }})</span></th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for employe in employes %}
+                        <tr>
+                            <td style="font-weight: 600;">
+                                {{ employe.nom }} {{ employe.prenom }}
+                                <div style="font-size: 0.75rem; color: var(--text-muted);">{{ employe.poste.libelle }}</div>
+                            </td>
+                            {% for kpi in kpis %}
+                                <td style="text-align: center;">
+                                    <input type="number" 
+                                           step="0.01" 
+                                           name="evaluations[{{ employe.id }}][{{ kpi.id }}]" 
+                                           class="form-input" 
+                                           style="width: 80px; text-align: center;"
+                                           min="{{ kpi.valeurMin }}"
+                                           max="{{ kpi.valeurMax }}">
+                                </td>
+                            {% endfor %}
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="{{ kpis|length + 1 }}" style="text-align: center; padding: 2rem;">Aucun employé actif.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div style="margin-top: 2rem; display: flex; justify-content: flex-end; gap: 1rem;">
+            <a href="{{ path('app_finance_perf') }}" class="btn" style="background: var(--bg-main);">Annuler</a>
+            <button type="submit" class="btn btn-primary" style="padding-left: 2rem; padding-right: 2rem;">Enregistrer les évaluations</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

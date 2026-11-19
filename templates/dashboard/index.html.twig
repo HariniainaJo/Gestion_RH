@@ -1,0 +1,180 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tableau de bord - Zanova GRH{% endblock %}
+{% block page_title %}Tableau de bord{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block body %}
+<div class="stat-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+    <div class="stat-card">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+            <div style="width: 48px; height: 48px; background: rgba(99, 102, 241, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--primary);">
+                <i class="fas fa-users fa-lg"></i>
+            </div>
+        </div>
+        <div class="stat-value">{{ total_employes }}</div>
+        <div class="stat-label">Employés actifs</div>
+    </div>
+    
+    <div class="stat-card">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+            <div style="width: 48px; height: 48px; background: rgba(16, 185, 129, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #10b981;">
+                <i class="fas fa-calendar-check fa-lg"></i>
+            </div>
+        </div>
+        <div class="stat-value">{{ conges_en_attente }}</div>
+        <div class="stat-label">Congés en attente</div>
+    </div>
+
+    <div class="stat-card">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+            <div style="width: 48px; height: 48px; background: rgba(245, 158, 11, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #f59e0b;">
+                <i class="fas fa-hand-holding-dollar fa-lg"></i>
+            </div>
+        </div>
+        <div class="stat-value">{{ avances_en_attente }}</div>
+        <div class="stat-label">Avances à valider</div>
+    </div>
+    
+    <div class="stat-card">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+            <div style="width: 48px; height: 48px; background: rgba(239, 68, 68, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #ef4444;">
+                <i class="fas fa-user-slash fa-lg"></i>
+            </div>
+        </div>
+        <div class="stat-value">{{ absences_today }}</div>
+        <div class="stat-label">Absences (Aujourd'hui)</div>
+    </div>
+    
+    <div class="stat-card">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+            <div style="width: 48px; height: 48px; background: rgba(244, 63, 94, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #f43f5e;">
+                <i class="fas fa-user-clock fa-lg"></i>
+            </div>
+        </div>
+        <div class="stat-value">{{ retards_today }}</div>
+        <div class="stat-label">Retards (Aujourd'hui)</div>
+    </div>
+</div>
+
+<div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+    <div class="card">
+        <h3 style="font-weight: 700; margin-bottom: 1.5rem;">Évolution de la masse salariale (Salaire Net)</h3>
+        <canvas id="payrollChart" style="max-height: 300px;"></canvas>
+    </div>
+    
+    <div class="card">
+        <h3 style="font-weight: 700; margin-bottom: 1.5rem;">Répartition des Congés</h3>
+        <canvas id="congeChart" style="max-height: 300px;"></canvas>
+    </div>
+</div>
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h3 style="font-weight: 700;">Activités Récentes</h3>
+        </div>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Utilisateur</th>
+                        <th>Action</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for log in recent_activities %}
+                        <tr>
+                            <td><b>{{ log.user.username }}</b></td>
+                            <td>{{ log.action }} <span style="font-size: 0.7rem; color: var(--text-muted);">on {{ log.tableConcernee }}</span></td>
+                            <td>{{ log.dateAction|date('H:i d/m') }}</td>
+                        </tr>
+                    {% else %}
+                        <tr><td colspan="3" style="text-align: center; color: var(--text-muted); padding: 2rem;">Aucune activité</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <div class="card">
+        <h3 style="font-weight: 700; margin-bottom: 1.5rem;">Force de travail par Direction</h3>
+        <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+            {% for item in distribution %}
+                <div>
+                    <div style="display: flex; justify-content: space-between; font-size: 0.875rem; margin-bottom: 0.5rem;">
+                        <span style="font-weight: 500;">{{ item.nom }}</span>
+                        <span style="font-weight: 700; color: var(--primary);">{{ item.count }} services</span>
+                    </div>
+                    <div style="height: 10px; background: rgba(99, 102, 241, 0.05); border-radius: 5px; overflow: hidden;">
+                        <div style="width: {{ (item.count / 10 * 100)|round }}%; height: 100%; background: linear-gradient(90deg, var(--primary), #818cf8); border-radius: 5px;"></div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('turbo:load', function() {
+    // Nettoyage des instances existantes si nécessaire (Chart.js peut bugger avec Turbo)
+    const existingChartPayroll = Chart.getChart("payrollChart");
+    if (existingChartPayroll) existingChartPayroll.destroy();
+    
+    const existingChartConge = Chart.getChart("congeChart");
+    if (existingChartConge) existingChartConge.destroy();
+
+    // Payroll Chart
+    const payrollCtx = document.getElementById('payrollChart').getContext('2d');
+    new Chart(payrollCtx, {
+        type: 'line',
+        data: {
+            labels: [{% for s in payroll_stats %}"Mois {{ s.mois }}/{{ s.annee }}",{% endfor %}],
+            datasets: [{
+                label: 'Masse Salariale (Ar)',
+                data: [{% for s in payroll_stats %}{{ s.total }},{% endfor %}],
+                borderColor: '#6366f1',
+                backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                fill: true,
+                tension: 0.4,
+                borderWidth: 3,
+                pointBackgroundColor: '#6366f1'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: { y: { beginAtZero: true } }
+        }
+    });
+
+    // Conge Chart
+    const congeCtx = document.getElementById('congeChart').getContext('2d');
+    new Chart(congeCtx, {
+        type: 'doughnut',
+        data: {
+            labels: [{% for c in conge_stats %}"{{ c.type }}",{% endfor %}],
+            datasets: [{
+                data: [{% for c in conge_stats %}{{ c.count }},{% endfor %}],
+                backgroundColor: ['#6366f1', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#3b82f6'],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'bottom', labels: { usePointStyle: true, padding: 20 } }
+            },
+            cutout: '70%'
+        }
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,120 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails Navette - {{ navette.codeNavette }}{% endblock %}
+{% block page_title %}Logistique & Navettes{% endblock %}
+
+{% block body %}
+<div style="display: grid; grid-template-columns: 1fr 2fr; gap: 2rem;">
+    <div class="card">
+        <div style="width: 64px; height: 64px; background: var(--bg-main); border-radius: 16px; display: flex; align-items: center; justify-content: center; color: var(--primary); margin-bottom: 1.5rem;">
+            <i class="fas fa-bus fa-2x"></i>
+        </div>
+        <h3 style="font-weight: 700; margin-bottom: 0.5rem;">Navette {{ navette.codeNavette }}</h3>
+        <p style="color: var(--text-muted); font-size: 0.875rem; margin-bottom: 2rem;">Capacité totale : {{ navette.capacite }} personnes</p>
+
+        <div style="margin-bottom: 2rem;">
+            <label style="display: block; font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 0.5rem;">Axe / Trajet</label>
+            <div style="font-weight: 600;">{{ navette.axe.nomAxe }}</div>
+            <div style="font-size: 0.875rem; margin-top: 0.25rem;">
+                {{ navette.axe.pointDepart }} <i class="fas fa-arrow-right fa-xs mx-2"></i> {{ navette.axe.pointArrivee }}
+            </div>
+        </div>
+
+        <a href="{{ path('app_logistique_navettes') }}" class="btn" style="background: var(--bg-main); width: 100%;">Retour à la liste</a>
+    </div>
+
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h3 style="font-weight: 700;">Employés inscrits ({{ navette.employes|length }})</h3>
+            <div style="position: relative;">
+                <form action="{{ path('app_navette_add_employe', {'id': navette.id}) }}" method="post" style="display: flex; gap: 0.5rem;" autocomplete="off">
+                    <div style="position: relative;">
+                        <input type="text" id="employee-search" placeholder="Rechercher nom/matricule..." style="padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 8px; width: 250px;">
+                        <input type="hidden" name="employe_id" id="selected-employee-id" required>
+                        <div id="search-results" style="position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid var(--border-color); border-radius: 8px; margin-top: 4px; display: none; z-index: 10; max-height: 200px; overflow-y: auto; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);"></div>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="padding: 0.5rem 1rem;">Ajouter</button>
+                </form>
+            </div>
+        </div>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Employé</th>
+                        <th>Poste</th>
+                        <th>Contact</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for employe in navette.employes %}
+                        <tr>
+                            <td style="font-weight: 600;">{{ employe.nom }} {{ employe.prenom }}</td>
+                            <td style="font-size: 0.875rem;">{{ employe.poste.libelle }}</td>
+                            <td style="font-size: 0.875rem;">{{ employe.contact }}</td>
+                            <td>
+                                <form action="{{ path('app_navette_remove_employe', {'id': navette.id, 'employeId': employe.id}) }}" method="post" onsubmit="return confirm('Retirer cet employé de la navette ?');">
+                                    <button type="submit" class="btn" style="color: #ef4444; background: #fee2e2; padding: 0.4rem 0.8rem; border-radius: 6px;">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="4" style="text-align: center; color: var(--text-muted); padding: 2rem;">Aucun employé dans cette navette.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    const searchInput = document.getElementById('employee-search');
+    const resultsDiv = document.getElementById('search-results');
+    const hiddenInput = document.getElementById('selected-employee-id');
+
+    searchInput.addEventListener('input', function() {
+        if (this.value.length < 2) {
+            resultsDiv.style.display = 'none';
+            return;
+        }
+
+        fetch(`{{ path('api_search_employe') }}?q=${this.value}`)
+            .then(response => response.json())
+            .then(data => {
+                resultsDiv.innerHTML = '';
+                if (data.results.length > 0) {
+                    data.results.forEach(emp => {
+                        const div = document.createElement('div');
+                        div.style.padding = '0.5rem 1rem';
+                        div.style.cursor = 'pointer';
+                        div.style.fontSize = '0.875rem';
+                        div.textContent = emp.text;
+                        div.onmouseover = () => div.style.background = '#f3f4f6';
+                        div.onmouseout = () => div.style.background = 'white';
+                        div.onclick = () => {
+                            searchInput.value = emp.text;
+                            hiddenInput.value = emp.id;
+                            resultsDiv.style.display = 'none';
+                        };
+                        resultsDiv.appendChild(div);
+                    });
+                    resultsDiv.style.display = 'block';
+                } else {
+                    resultsDiv.style.display = 'none';
+                }
+            });
+    });
+
+    document.addEventListener('click', function(e) {
+        if (e.target !== searchInput) {
+            resultsDiv.style.display = 'none';
+        }
+    });
+</script>
+{% endblock %}
+

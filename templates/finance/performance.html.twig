@@ -1,0 +1,90 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}KPI & Primes - Zanova GRH{% endblock %}
+{% block page_title %}Performance & Objectifs{% endblock %}
+
+{% block body %}
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+            <h3 style="font-weight: 700;">Indicateurs (KPI)</h3>
+            <a href="{{ path('app_kpi_new') }}" class="btn btn-primary" style="width: auto; padding: 0.5rem 1rem; font-size: 0.875rem;">
+                <i class="fas fa-plus"></i> Nouveau KPI
+            </a>
+        </div>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Plage</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for kpi in kpis %}
+                        <tr>
+                            <td style="font-weight: 600;">{{ kpi.nomKpi }}</td>
+                            <td>{{ kpi.valeurMin }} - {{ kpi.valeurMax }}</td>
+                            <td>
+                            <td>
+                                <a href="{{ path('app_kpi_edit', {'id': kpi.id}) }}" class="btn" style="background: var(--bg-main); padding: 0.4rem; border-radius: 6px;"><i class="fas fa-edit fa-xs"></i></a>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr><td colspan="3" style="text-align: center; color: var(--text-muted); padding: 2rem;">Aucun KPI</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+            <h3 style="font-weight: 700;">Primes & Bonus</h3>
+            <a href="{{ path('app_prime_new') }}" class="btn btn-primary" style="width: auto; padding: 0.5rem 1rem; font-size: 0.875rem;">
+                <i class="fas fa-plus"></i> Nouvelle Prime
+            </a>
+        </div>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Prime</th>
+                        <th>Montant Max</th>
+                        <th>Type</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for prime in primes %}
+                        <tr>
+                            <td style="font-weight: 600;">{{ prime.nomPrime }}</td>
+                            <td>{{ prime.montantMax }} Ar</td>
+                            <td>
+                                <span class="badge {{ prime.collectif ? 'badge-warning' : 'badge-success' }}">
+                                    {{ prime.collectif ? 'Collective' : 'Individuelle' }}
+                                </span>
+                            </td>
+                            <td>
+                                <a href="{{ path('app_prime_edit', {'id': prime.id}) }}" class="btn" style="background: var(--bg-main); padding: 0.4rem; border-radius: 6px;"><i class="fas fa-edit fa-xs"></i></a>
+                            </td>
+
+                        </tr>
+                    {% else %}
+                        <tr><td colspan="4" style="text-align: center; color: var(--text-muted); padding: 2rem;">Aucune prime définie</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="card" style="margin-top: 1.5rem;">
+    <h3 style="font-weight: 700; margin-bottom: 2rem;">Évaluations Mensuelles</h3>
+    <p style="color: var(--text-muted);">Saisissez les scores des employés pour calculer les primes du mois en cours.</p>
+    <div style="margin-top: 1rem; display: flex; gap: 1rem;">
+         <a href="{{ path('app_finance_evaluation') }}" class="btn btn-primary" style="width: auto;">Démarrer l'évaluation de {{ "now"|date("F Y") }}</a>
+    </div>
+</div>
+{% endblock %}

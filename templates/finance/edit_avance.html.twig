@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier avance - Zanova GRH{% endblock %}
+{% block page_title %}Édition de l'avance{% endblock %}
+
+{% block body %}
+<div class="card" style="max-width: 600px; margin: 0 auto;">
+    <h3 style="font-weight: 700; margin-bottom: 2rem;">Modifier la demande d'avance</h3>
+    
+    {{ form_start(form) }}
+        {{ form_row(form.employe) }}
+        {{ form_row(form.montant) }}
+        {{ form_row(form.dateDemande) }}
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+             {{ form_row(form.moisDeduction) }}
+             {{ form_row(form.anneeDeduction) }}
+        </div>
+        
+        {{ form_row(form.motif) }}
+        
+        <div style="margin-top: 2rem; display: flex; gap: 1rem;">
+            <button class="btn btn-primary" style="width: auto; min-width: 150px;">
+                <i class="fas fa-save" style="margin-right: 8px;"></i> Mettre à jour
+            </button>
+            <a href="{{ path('app_finance_avances') }}" class="btn" style="background: var(--bg-main); width: auto;">Annuler</a>
+        </div>
+    {{ form_end(form) }}
+</div>
+{% endblock %}

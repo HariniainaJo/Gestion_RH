@@ -1,0 +1,173 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Profil Employé - {{ employe.nom }}{% endblock %}
+{% block page_title %}Détails de l'employé{% endblock %}
+
+{% block body %}
+<div style="display: grid; grid-template-columns: 1fr 2fr; gap: 2rem;">
+    <div class="card" style="text-align: center;">
+        <div style="width: 120px; height: 120px; background: #f1f5f9; border-radius: 24px; margin: 0 auto 1.5rem; display: flex; align-items: center; justify-content: center; font-size: 3rem; color: var(--text-muted); font-weight: 700; overflow: hidden; border: 4px solid white; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);">
+            {% if employe.photoProfil and not (employe.photoProfil matches '/\\.pdf$/i') %}
+                <img src="{{ asset('uploads/' ~ employe.photoProfil) }}" alt="" style="width: 100%; height: 100%; object-fit: cover;">
+            {% else %}
+                {{ (employe.nom|first|upper) ~ (employe.prenom|first|upper) }}
+            {% endif %}
+
+        </div>
+        <h3 style="font-weight: 700; margin-bottom: 0.5rem;">{{ employe.nom }} {{ employe.prenom }}</h3>
+        <p style="color: var(--primary); font-weight: 600; font-size: 0.875rem; margin-bottom: 1.5rem;">{{ employe.poste.libelle }}</p>
+        
+        <div style="display: flex; flex-direction: column; gap: 0.75rem; text-align: left;">
+            <div style="display: flex; align-items: center; gap: 10px; font-size: 0.875rem;">
+                <i class="fas fa-envelope" style="width: 20px; color: var(--text-muted);"></i>
+                <span>{{ employe.email }}</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px; font-size: 0.875rem;">
+                <i class="fas fa-phone" style="width: 20px; color: var(--text-muted);"></i>
+                <span>{{ employe.contact }}</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px; font-size: 0.875rem;">
+                <i class="fas fa-map-marker-alt" style="width: 20px; color: var(--text-muted);"></i>
+                <span>{{ employe.adresse }}</span>
+            </div>
+        </div>
+
+        <div style="margin-top: 2rem; display: flex; gap: 0.5rem;">
+            <a href="{{ path('app_employe_edit', {'id': employe.id}) }}" class="btn btn-primary" style="flex: 1;">Modifier</a>
+            <a href="{{ path('app_employe_index') }}" class="btn" style="background: var(--bg-main); flex: 1;">Retour</a>
+        </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 2rem;">
+        <div class="card">
+            <h3 style="font-weight: 700; margin-bottom: 1.5rem;">Informations Professionnelles</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                <div>
+                    <label style="display: block; font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem;">Date d'embauche</label>
+                    <div style="font-weight: 600;">{{ employe.dateEmbauche|date('d F Y') }}</div>
+                </div>
+                <div>
+                    <label style="display: block; font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem;">Statut</label>
+                    <span class="badge {{ employe.statut == 'Actif' ? 'badge-success' : 'badge-danger' }}">{{ employe.statut }}</span>
+                </div>
+                <div>
+                    <label style="display: block; font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem;">Direction</label>
+                    <div style="font-weight: 600;">{{ employe.poste.direction.nomDirection ?? '-' }}</div>
+                </div>
+                <div>
+                    <label style="display: block; font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem;">Service</label>
+                    <div style="font-weight: 600;">{{ employe.poste.service.nomService ?? '-' }}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3 style="font-weight: 700; margin-bottom: 1.5rem;">Documents & Fichiers</h3>
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+                <!-- CIN Document -->
+                <div style="padding: 1rem; background: var(--bg-main); border-radius: 12px;">
+                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <i class="fas fa-id-card fa-lg" style="color: var(--primary);"></i>
+                            <div>
+                                <div style="font-size: 0.875rem; font-weight: 600;">Scan CIN</div>
+                                <div style="font-size: 0.75rem; color: var(--text-muted);">{{ employe.photoCin ? 'Image disponible' : 'Non fourni' }}</div>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 0.5rem;">
+                            {% if employe.photoCin %}
+                                <button onclick="openModal('{{ asset('uploads/' ~ employe.photoCin) }}', 'image')" class="btn" style="padding: 0.4rem; background: white; border-radius: 8px;" title="Aperçu"><i class="fas fa-search-plus fa-xs"></i></button>
+                                <a href="{{ asset('uploads/' ~ employe.photoCin) }}" target="_blank" data-turbo="false" class="btn" style="padding: 0.4rem; background: white; border-radius: 8px;" title="Télécharger"><i class="fas fa-download fa-xs"></i></a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CV Document -->
+                <div style="padding: 1rem; background: var(--bg-main); border-radius: 12px;">
+                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <i class="fas fa-file-pdf fa-lg" style="color: #ef4444;"></i>
+                            <div>
+                                <div style="font-size: 0.875rem; font-weight: 600;">CV / Resume</div>
+                                <div style="font-size: 0.75rem; color: var(--text-muted);">{{ employe.cvFichier ? 'Document PDF' : 'Non fourni' }}</div>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 0.5rem;">
+                            {% if employe.cvFichier %}
+                                <button onclick="openModal('{{ asset('uploads/' ~ employe.cvFichier) }}', 'pdf')" class="btn" style="padding: 0.4rem; background: white; border-radius: 8px;" title="Aperçu"><i class="fas fa-search-plus fa-xs"></i></button>
+                                <a href="{{ asset('uploads/' ~ employe.cvFichier) }}" target="_blank" data-turbo="false" class="btn" style="padding: 0.4rem; background: white; border-radius: 8px;" title="Télécharger"><i class="fas fa-download fa-xs"></i></a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Structure -->
+<div id="previewModal" style="display: none; position: fixed; inset: 0; z-index: 9999; background: rgba(0,0,0,0.5); backdrop-filter: blur(8px); align-items: center; justify-content: center; padding: 2rem;">
+    <div style="background: white; border-radius: 20px; width: 100%; max-width: 950px; height: 90vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.3);">
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 1.5rem; border-bottom: 1px solid #f1f5f9;">
+            <h3 id="modalTitle" style="font-weight: 700; margin: 0;">Aperçu du document</h3>
+            <button onclick="closeModal()" style="background: #f1f5f9; border: none; padding: 0.5rem; width: 32px; height: 32px; border-radius: 8px; cursor: pointer; color: #64748b; display: flex; align-items: center; justify-content: center;">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div id="modalContent" style="flex: 1; overflow: hidden; display: flex; justify-content: center; background: #f8fafc; position: relative;">
+            <!-- Content loaded via JS -->
+        </div>
+    </div>
+</div>
+
+<script>
+    function openModal(url, type) {
+        const modal = document.getElementById('previewModal');
+        const content = document.getElementById('modalContent');
+        const title = document.getElementById('modalTitle');
+        
+        content.innerHTML = ''; 
+        
+        if (type === 'image') {
+            title.innerText = 'Aperçu - Image';
+            content.style.overflow = 'auto';
+            content.innerHTML = `<img src="${url}" style="max-width: 100%; border-radius: 12px; margin: auto; display: block;">`;
+        } else {
+            title.innerText = 'Aperçu - Document PDF';
+            content.style.overflow = 'hidden';
+            // Using object tag for better compatibility and to bypass headers that force download in iframes
+            content.innerHTML = `
+                <object data="${url}" type="application/pdf" width="100%" height="100%">
+                    <div style="text-align: center; padding: 3rem;">
+                        <i class="fas fa-file-pdf fa-4x" style="color: #ef4444; margin-bottom: 1rem;"></i>
+                        <p>Votre navigateur ne peut pas afficher l'aperçu PDF directement.</p>
+                        <a href="${url}" target="_blank" class="btn btn-primary" style="display: inline-block; margin-top: 1rem;">Ouvrir le fichier manuellement</a>
+                    </div>
+                </object>
+            `;
+        }
+        
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+        const modal = document.getElementById('previewModal');
+        const content = document.getElementById('modalContent');
+        content.innerHTML = ''; // Destroy the object/embed to stop the connection
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+
+    window.onclick = function(event) {
+        const modal = document.getElementById('previewModal');
+        if (event.target == modal) {
+            closeModal();
+        }
+    }
+</script>
+
+
+
+{% endblock %}

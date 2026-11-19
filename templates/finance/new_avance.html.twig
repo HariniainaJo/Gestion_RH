@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouvelle Avance - Zanova GRH{% endblock %}
+{% block page_title %}Finance & Paie{% endblock %}
+
+{% block body %}
+<div class="card" style="max-width: 600px; margin: 0 auto;">
+    <h3 style="margin-bottom: 2rem; font-weight: 700;">Nouvelle demande d'avance</h3>
+
+    {# Erreurs globales du formulaire (ex: avance déjà demandée ce mois) #}
+    {% if form_errors(form) %}
+        <div class="alert alert-danger" style="margin-bottom: 1rem;">
+            {{ form_errors(form) }}
+        </div>
+    {% endif %}
+    
+    {{ form_start(form) }}
+        <div class="form-group">
+            {{ form_label(form.employe) }}
+            {{ form_widget(form.employe) }}
+            {{ form_errors(form.employe) }}
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem;">
+            <div class="form-group">
+                {{ form_label(form.montant) }}
+                {{ form_widget(form.montant) }}
+                {{ form_errors(form.montant) }}
+            </div>
+            <div class="form-group">
+                {{ form_label(form.dateDemande) }}
+                {{ form_widget(form.dateDemande) }}
+                {{ form_errors(form.dateDemande) }}
+            </div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem;">
+            <div class="form-group">
+                {{ form_label(form.moisDeduction) }}
+                {{ form_widget(form.moisDeduction) }}
+                {{ form_errors(form.moisDeduction) }}
+            </div>
+            <div class="form-group">
+                {{ form_label(form.anneeDeduction) }}
+                {{ form_widget(form.anneeDeduction) }}
+                {{ form_errors(form.anneeDeduction) }}
+            </div>
+        </div>
+        <div class="form-group" style="margin-top: 1rem;">
+            {{ form_label(form.motif) }}
+            {{ form_widget(form.motif) }}
+            {{ form_errors(form.motif) }}
+        </div>
+        
+        <div style="margin-top: 2rem; display: flex; justify-content: flex-end; gap: 1rem;">
+            <a href="{{ path('app_finance_avances') }}" class="btn" style="background: var(--bg-main);">Annuler</a>
+            <button class="btn btn-primary" style="padding-left: 2rem; padding-right: 2rem;">Enregistrer la demande</button>
+        </div>
+    {{ form_end(form) }}
+</div>
+{% endblock %}

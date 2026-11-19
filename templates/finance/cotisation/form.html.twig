@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ is_edit ? 'Modifier une cotisation' : 'Nouvelle cotisation' }} - Zanova GRH{% endblock %}
+{% block page_title %}Cotisations sociales & impôts{% endblock %}
+
+{% block body %}
+<div class="card" style="max-width: 600px; margin: 0 auto;">
+    <h3 style="margin-bottom: 2rem; font-weight: 700;">
+        {{ is_edit ? 'Modifier une cotisation' : 'Nouvelle cotisation' }}
+    </h3>
+
+    {% if form_errors(form) %}
+        <div class="alert alert-danger" style="margin-bottom: 1rem;">
+            {{ form_errors(form) }}
+        </div>
+    {% endif %}
+
+    {{ form_start(form) }}
+        <div class="form-group">
+            {{ form_label(form.code) }}
+            {{ form_widget(form.code) }}
+            {{ form_errors(form.code) }}
+        </div>
+        <div class="form-group" style="margin-top: 1rem;">
+            {{ form_label(form.nom) }}
+            {{ form_widget(form.nom) }}
+            {{ form_errors(form.nom) }}
+        </div>
+        <div class="form-group" style="margin-top: 1rem;">
+            {{ form_label(form.taux) }}
+            {{ form_widget(form.taux) }}
+            {{ form_errors(form.taux) }}
+            <small style="color: var(--text-muted);">Exemple : 0.01 pour 1% du salaire brut.</small>
+        </div>
+        <div class="form-group" style="margin-top: 1rem;">
+            {{ form_label(form.plafond) }}
+            {{ form_widget(form.plafond) }}
+            {{ form_errors(form.plafond) }}
+            <small style="color: var(--text-muted);">Laisser vide s'il n'y a pas de plafond.</small>
+        </div>
+        <div class="form-group" style="margin-top: 1rem;">
+            {{ form_label(form.seuil) }}
+            {{ form_widget(form.seuil) }}
+            {{ form_errors(form.seuil) }}
+            <small style="color: var(--text-muted);">Utilisé par exemple pour l'IRSA.</small>
+        </div>
+
+        <div style="margin-top: 2rem; display: flex; justify-content: flex-end; gap: 1rem;">
+            <a href="{{ path('app_cotisation_index') }}" class="btn" style="background: var(--bg-main);">Annuler</a>
+            <button class="btn btn-primary" style="padding-left: 2rem; padding-right: 2rem;">
+                {{ is_edit ? 'Mettre à jour' : 'Enregistrer' }}
+            </button>
+        </div>
+    {{ form_end(form) }}
+</div>
+{% endblock %}
+

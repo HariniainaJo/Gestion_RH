@@ -1,0 +1,55 @@
+Phase;Semaine;Tâche;Sous-tâche;Description;Jours;Total Semaine (Ouvrés)
+1. Cadrage & Planification;Semaine 1;Analyse Technique & Besoins;Audit des processus RH;Analyse détaillée des flux actuels pour préparer le cahier des charges technique.;1.5;5
+;;;Spécification des Requirements;Rédaction des spécifications fonctionnelles et techniques basées sur vos besoins métiers.;1.5;
+;;;Modélisation du Backlog;Structuration des User Stories dans le backlog pour un développement Agile fluide.;1;
+;;;Sprint Planning Initial;Validation technique du premier cycle de développement et des priorités.;1;
+;Semaine 2;Infrastructure & Setup;Configuration du Serveur Interne;Installation et sécurisation de l'environnement de production sur votre serveur.;1.5;5
+;;;Architecture Base de Données;Conception du schéma SQL (MCD) pour une gestion optimale et intègre de vos données.;1.5;
+;;;Setup Pipeline CI/CD;Mise en place de l'automatisation pour les backups et les mises à jour en continu.;1;
+;;;Setup Architecture Backend;Initialisation du framework et des fondations techniques du projet (Frontend & Backend).;1;
+2. Développement Agile;Semaine 3;Architecture Core RH;Développement CRUD Employés;"Création de l'interface de gestion (Ajout, Modification, Liste) des fiches employés.";1.5;5
+;;;Gestionnaire de Documents;Implémentation du stockage et de l'archivage sécurisé des scans et dossiers (PDF/Images).;1.5;
+;;;Mapping des Entités;"Liaison technique entre les employés, leurs postes et leurs historiques administratifs.";1;
+;;;Logic Review Sprint 1;Démonstration technique des fonctionnalités de base et validation du socle RH.;1;
+;Semaine 4;Authentification & Sécurité;Module Auth & Login;Développement du système d'authentification sécurisé avec gestion des sessions.;1.5;5
+;;;Gestion RBAC (Rôles);"Configuration des rôles (Admin, RH, User) pour un contrôle d'accès granulaire.";1.5;
+;;;UI/UX Login & Dashboard;Design de l'interface utilisateur pour une expérience de connexion intuitive et moderne.;1;
+;;;Système de Backup Profils;Mise en place de la procédure de récupération et de sécurisation des données sensibles.;1;
+;Semaine 5;Logique Métier Congés;Workflow API Congés;Développement de la logique de demande de congés avec calcul automatique des jours.;1.5;5
+;;;Algorithme de Validation;Implémentation du système hiérarchique pour l'approbation des demandes via le Dashboard.;1.5;
+;;;Update Automatique Database;Gestion en temps réel de l'état des stocks de congés après chaque validation.;1;
+;;;Integration SMTP Notifications;Configuration de l'envoi automatique des alertes emails pour chaque étape du workflow.;1;
+;Semaine 6;Module Pointage & Présence;Interface Frontend Présence;Création du dashboard interactif pour le suivi quotidien des entrées et sorties.;1.5;5
+;;;Analyse de l'Assiduité;Moteur de détection automatique des retards et absences injustifiées.;1.5;
+;;;Module Upload Justificatifs;Développement de la fonctionnalité d'ajout de preuves documentaires aux absences.;1;
+;;;Vue Calendrier FullCalendar;Intégration d'un calendrier dynamique pour visualiser le planning global de l'équipe.;1;
+;Semaine 7;Moteur de Paie & Finance;Setup Paramètres Financiers;"Configuration des variables de calcul (IRSA, CNAPS, OSTIE) dans le backend.";1.5;5
+;;;Backend Moteur de Calcul;Développement de l'algorithme complexe générant le salaire Net à partir du salaire Brut.;1.5;
+;;;Logic Primes & Avances;Gestion technique des bonus et des retenues sur salaire pour chaque bulletin.;1;
+;;;Testing des Algorithmes;Audit et vérification de la précision des calculs financiers sur des cas réels.;1;
+;Semaine 8;Reporting & Exports;Générateur PDF Automatisé;Implémentation de la librairie backend pour la génération des fiches de paie PDF.;1.5;5
+;;;API Export Bancaire;Génération des fichiers de virement aux formats compatibles avec votre banque.;1.5;
+;;;Accounting Journal Export;Exportation des données de paie vers vos outils de comptabilité interne.;1;
+;;;Backup de Fin de Cycle;Procédure de sauvegarde et de clôture technique du mois de paie en base de données.;1;
+;Semaine 9;Recrutement & Talent;Pipeline Recrutement;Développement du workflow de suivi des candidats du dépôt de CV à l'embauche.;1.5;5
+;;;Frontend Portail Carrière;Interface de publication des offres et de réception des candidatures en ligne.;1.5;
+;;;Backend CVthèque;Système de stockage et de tri performant pour votre base de données candidats.;1;
+;;;Gestionnaire Stagiaires;Module spécifique pour le suivi administratif et pédagogique des stages.;1;
+;Semaine 10;Business Intelligence;Dashboard Analytique;"Création des graphiques décisionnels (Masse salariale, Turnover) via Chart.js.";1.5;5
+;;;Reporting Performance;Audit technique des données pour extraire les indicateurs clés de performance RH.;1.5;
+;;;Optimisation SQL Reports;Optimisation des requêtes complexes pour un affichage rapide des statistiques.;1;
+;;;Final Demo & Cleanup;Revue globale de l'application et nettoyage final du code source.;1;
+3. Qualité & Stabilisation;Semaine 11;Tests & Recette;Installation en Recette;Déploiement de l'application sur un environnement de test dédié pour vos utilisateurs.;1.5;5
+;;;Beta Testing / Bug Fixing;Collecte des retours de l'UAT (User Acceptance Testing) et correction des anomalies.;2.5;
+;;;Audit Cahier de Recette;Validation formelle de chaque fonctionnalité technique par rapport aux besoins.;1;
+;Semaine 12;Optimisation Initiale;Refactoring & Performance;Optimisation du code (Backend & Frontend) pour une fluidité maximale de l'app.;1.5;5
+;;;Audit Sécurité Final;Test de pénétration et renforcement de la sécurité des données sur le serveur.;1.5;
+;;;Ajustements UI Finaux;Polissage de l'interface utilisateur pour garantir une ergonomie premium.;1;
+;;;Release Candidate (RC);Préparation de la version finale prête pour le déploiement en production.;1;
+4. Deployment & Launch;Semaine 13;Mise en Production;Migration Database Live;Transfert final et sécurisé de vos données réelles vers l'environnement de production.;1.5;5
+;;;Formation Technique Admin;Formation approfondie sur la maintenance et la gestion utilisateur (Backend Admin).;1.5;
+;;;Deployment Final;Mise en ligne officielle de l'application sur votre infrastructure interne.;1;
+;;;Maintenance & Support;Période d'accompagnement post-déploiement pour assurer le succès du lancement.;1;
+;;;;;;
+TOTAL GÉNÉRAL;;;;;65 Jours;
+CONVERSION;;;;;(13 semaines de 5 jours ouvrés);

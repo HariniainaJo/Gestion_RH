@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+{% block title %}Nouveau KPI{% endblock %}
+{% block page_title %}Performance{% endblock %}
+{% block body %}
+<div class="card" style="max-width: 500px; margin: 0 auto;">
+    <h3 style="margin-bottom: 2rem;">Définir un indicateur (KPI)</h3>
+    {{ form_start(form) }}
+        <div class="form-group">{{ form_label(form.nomKpi) }}{{ form_widget(form.nomKpi) }}</div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">{{ form_label(form.valeurMin) }}{{ form_widget(form.valeurMin) }}</div>
+            <div class="form-group">{{ form_label(form.valeurMax) }}{{ form_widget(form.valeurMax) }}</div>
+        </div>
+        <div class="form-group">{{ form_label(form.description) }}{{ form_widget(form.description) }}</div>
+        
+        <div style="margin-top: 2rem; display: flex; gap: 1rem;">
+            <button class="btn btn-primary" style="width: auto;">Enregistrer</button>
+            <a href="{{ path('app_finance_perf') }}" class="btn" style="background: var(--bg-main); width: auto;">Annuler</a>
+        </div>
+    {{ form_end(form) }}
+</div>
+{% endblock %}

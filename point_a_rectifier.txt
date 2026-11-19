@@ -1,0 +1,19 @@
+Tous les filtres , ca a besoin que sa page soit reloader pour marcher
+
+side-bar reload et revient au debut a chaque clique de fonctionnalité 
+
+prime colective n'est pas pris en compte lors du calcul de la paie
+
+dans stagiaire form:date n'est pas la lors de l'editage / bouton maj et annuler au milieu
+
+dans congé possibilité de d'arrete
+
+justification a revoir car toujours vide
+
+
+dans finance/avance possibilité d'enlever la colonne action apres une action car ca reste vide
+
+
+
+
+ 

@@ -1,0 +1,4 @@
+nom;prenom;email;contact;date_naissance;adresse;situation_matrimoniale;date_embauche;poste;photo_profil_url;photo_cin_url;cv_url
+Dupont;Jean;jean.dupont@email.com;034 12 345 67;1990-05-15;Lot IV 123 Antananarivo;Célibataire;2023-01-15;Développeur;https://placehold.co/400x400/png;https://placehold.co/600x400/png;https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf
+Rakoto;Sarah;sarah.rakoto@email.com;032 98 765 43;1995-12-20;Lot II 456 Toamasina;Marié;2024-03-01;Comptable;https://placehold.co/400x400/png?text=Sarah;https://placehold.co/600x400/png?text=CIN+Sarah;https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf
+Martin;Pierre;pierre.martin@email.com;033 11 222 33;1988-08-10;Lot V 789 Fianarantsoa;Célibataire;2022-06-10;Manager;https://placehold.co/400x400/png?text=Pierre;https://placehold.co/600x400/png?text=CIN+Pierre;https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf

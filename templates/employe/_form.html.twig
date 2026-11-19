@@ -1,0 +1,85 @@
+{{ form_start(form, {'attr': {'enctype': 'multipart/form-data', 'data-turbo': 'false'}}) }}
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+        <div class="form-group">
+            <label class="form-label">Nom</label>
+            {{ form_widget(form.nom) }}
+        </div>
+        <div class="form-group">
+            <label class="form-label">Prénom</label>
+            {{ form_widget(form.prenom) }}
+        </div>
+        <div class="form-group">
+            <label class="form-label">Date de naissance</label>
+            {{ form_widget(form.dateNaissance) }}
+        </div>
+        <div class="form-group">
+            <label class="form-label">Email</label>
+            {{ form_widget(form.email) }}
+        </div>
+        <div class="form-group">
+            <label class="form-label">Contact</label>
+            {{ form_widget(form.contact) }}
+        </div>
+        <div class="form-group">
+            <label class="form-label">Situation Matrimoniale</label>
+            {{ form_widget(form.situationMatrimoniale) }}
+        </div>
+        <div class="form-group">
+            <label class="form-label">Poste</label>
+            {{ form_widget(form.poste) }}
+        </div>
+        <div class="form-group">
+            <label class="form-label">Date d'embauche</label>
+            {{ form_widget(form.dateEmbauche) }}
+        </div>
+        <div class="form-group">
+            <label class="form-label">Statut</label>
+            {{ form_widget(form.statut) }}
+        </div>
+        <div class="form-group" style="grid-column: span 2;">
+            <label class="form-label">Adresse</label>
+            {{ form_widget(form.adresse) }}
+        </div>
+        <div class="form-group">
+            <label class="form-label">Photo de profil</label>
+            {{ form_widget(form.photoProfilFile) }}
+            {% if employe.photoProfil %}
+                <div style="margin-top: 0.5rem;">
+                    <a href="{{ asset('uploads/' ~ employe.photoProfil) }}" target="_blank" style="font-size: 0.75rem; color: var(--primary); text-decoration: none;">
+                        <i class="fas fa-image"></i> Voir la photo actuelle
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+        <div class="form-group">
+            <label class="form-label">Scan CIN</label>
+            {{ form_widget(form.photoCinFile) }}
+            {% if employe.photoCin %}
+                <div style="margin-top: 0.5rem;">
+                    <a href="{{ asset('uploads/' ~ employe.photoCin) }}" target="_blank" style="font-size: 0.75rem; color: var(--primary); text-decoration: none;">
+                        <i class="fas fa-id-card"></i> Voir le scan actuel
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+        <div class="form-group">
+            <label class="form-label">CV (PDF)</label>
+            {{ form_widget(form.cvFile) }}
+            {% if employe.cvFichier %}
+                <div style="margin-top: 0.5rem;">
+                    <a href="{{ asset('uploads/' ~ employe.cvFichier) }}" target="_blank" style="font-size: 0.75rem; color: var(--primary); text-decoration: none;">
+                        <i class="fas fa-file-pdf"></i> Voir le CV actuel
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    
+    <div style="margin-top: 2rem; display: flex; gap: 1rem;">
+        <button class="btn btn-primary" style="width: auto; min-width: 150px;">
+            <i class="fas fa-save" style="margin-right: 8px;"></i> {{ button_label|default('Enregistrer') }}
+        </button>
+        <a href="{{ path('app_employe_index') }}" class="btn" style="background: var(--bg-main); width: auto;">Annuler</a>
+    </div>
+{{ form_end(form) }}

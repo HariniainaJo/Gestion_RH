@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+{% block title %}Nouveau Service{% endblock %}
+{% block page_title %}Structure Organisationnelle{% endblock %}
+{% block body %}
+<div class="card" style="max-width: 500px; margin: 0 auto;">
+    <h3 style="margin-bottom: 2rem;">Ajouter un service</h3>
+    {{ form_start(form) }}
+        <div class="form-group">{{ form_label(form.nomService, 'Nom du service') }}{{ form_widget(form.nomService) }}</div>
+        <div class="form-group">{{ form_label(form.direction) }}{{ form_widget(form.direction) }}</div>
+        <div style="margin-top: 2rem; display: flex; gap: 1rem;">
+            <button class="btn btn-primary" style="width: auto;">Enregistrer</button>
+            <a href="{{ path('app_structure_index') }}" class="btn" style="background: var(--bg-main); width: auto;">Annuler</a>
+        </div>
+    {{ form_end(form) }}
+</div>
+{% endblock %}

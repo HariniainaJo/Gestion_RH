@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Embauche - {{ candidat.nom }}{% endblock %}
+{% block page_title %}Finalisation de l'Embauche{% endblock %}
+
+{% block body %}
+<div style="max-width: 600px; margin: 0 auto;">
+    <div class="card" style="border: 1px solid var(--primary); background: linear-gradient(to bottom, #ffffff, #f8fafc);">
+        <div style="text-align: center; margin-bottom: 2rem;">
+            <div style="width: 80px; height: 80px; background: #dcfce7; color: #166534; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 1.5rem;">
+                <i class="fas fa-id-card-clip"></i>
+            </div>
+            <h3 style="font-weight: 700; margin-bottom: 0.5rem;">Confirmation d'Embauche</h3>
+            <p style="color: var(--text-muted);">Vous allez intégrer <strong>{{ candidat.nom|upper }} {{ candidat.prenom }}</strong> dans le registre du personnel.</p>
+        </div>
+
+        <form method="post" action="{{ path('app_candidat_hire', {'id': candidat.id}) }}" style="display: flex; flex-direction: column; gap: 1.5rem;">
+            <div class="form-group">
+                <label style="display: block; font-size: 0.875rem; font-weight: 600; margin-bottom: 0.5rem;">Poste d'affectation</label>
+                <div style="background: var(--bg-main); padding: 0.75rem 1rem; border-radius: 8px; font-weight: 700; color: var(--primary); border: 1px solid var(--border-color);">
+                    {{ candidat.recrutement.poste.libelle }}
+                </div>
+                <small style="color: var(--text-muted); display: block; margin-top: 0.25rem;">Le poste est défini par la campagne de recrutement.</small>
+            </div>
+
+            <div class="form-group">
+                <label for="dateEmbauche" style="display: block; font-size: 0.875rem; font-weight: 600; margin-bottom: 0.5rem;">Date d'embauche effective</label>
+                <input type="date" id="dateEmbauche" name="dateEmbauche" class="form-input" value="{{ "now"|date("Y-m-d") }}" required>
+            </div>
+
+            <div style="padding: 1rem; background: #eff6ff; border-radius: 12px; border: 1px dashed #3b82f6; margin: 1rem 0;">
+                <p style="font-size: 0.875rem; color: #1e3a8a; margin: 0; line-height: 1.5;">
+                    <i class="fas fa-info-circle"></i> En validant, les informations personnelles, le contact et le CV seront automatiquement transférés vers sa nouvelle fiche employé.
+                </p>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem;">
+                <a href="{{ path('app_candidat_show_detail', {'id': candidat.id}) }}" class="btn" style="background: var(--bg-main); text-align: center;">Annuler</a>
+                <button type="submit" class="btn btn-primary" style="font-weight: 700;">
+                    <i class="fas fa-check-double" style="margin-right: 8px;"></i> VALIDER L'EMBAUCHE
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

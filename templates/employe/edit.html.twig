@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier employé - Zanova GRH{% endblock %}
+{% block page_title %}Édition du collaborateur{% endblock %}
+
+{% block body %}
+<div class="card" style="max-width: 800px; margin: 0 auto;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+        <h3 style="font-weight: 700;">Modifier : {{ employe.nom }} {{ employe.prenom }}</h3>
+        
+        <form method="post" action="{{ path('app_employe_delete', {'id': employe.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet employé ?');">
+            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ employe.id) }}">
+            <button class="btn" style="background: #fee2e2; color: #991b1b; padding: 0.6rem 1rem; font-size: 0.875rem;">
+                <i class="fas fa-trash-alt" style="margin-right: 8px;"></i> Supprimer
+            </button>
+        </form>
+    </div>
+    
+    {{ include('employe/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
+</div>
+{% endblock %}

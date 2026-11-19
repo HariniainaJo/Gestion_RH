@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{% block title %}GRH Zanova{% endblock %}</title>
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>🏢</text></svg>">
+        
+        {% block stylesheets %}
+            <link rel="stylesheet" href="{{ asset('styles/app.css') }}">
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+            <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+            <!-- FullCalendar CSS -->
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/main.min.css">
+        {% endblock %}
+
+        {% block javascripts %}
+            {% block importmap %}{{ importmap('app') }}{% endblock %}
+            <!-- FullCalendar JS -->
+            <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
+        {% endblock %}
+    </head>
+    <body class="{% if not app.user %}login-page{% endif %}">
+        <div class="{% if app.user %}app-layout{% endif %}">
+            {% if app.user %}
+                <aside class="sidebar" style="display: flex; flex-direction: column;">
+                    <div class="auth-logo" style="margin-bottom: 2rem; text-align: left; padding: 0 1.5rem;">
+                        <h1 style="font-size: 1.25rem;">ZANOVA GRH</h1>
+                    </div>
+                    
+                    <nav style="flex: 1; overflow-y: auto; padding: 0 0.75rem;">
+
+                        <a href="{{ path('app_dashboard') }}" class="nav-link {{ app.request.attributes.get('_route') == 'app_dashboard' ? 'active' : '' }}">
+                            <i class="fas fa-chart-pie" style="width: 20px; margin-right: 12px;"></i>
+                            <span class="nav-text">Tableau de bord</span>
+                        </a>
+                        
+                        <div style="margin: 1.5rem 0 0.5rem 1rem; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Organisation</div>
+                        <a href="{{ path('app_structure_index') }}" class="nav-link {{ app.request.attributes.get('_route') == 'app_structure_index' ? 'active' : '' }}">
+                            <i class="fas fa-sitemap" style="width: 20px; margin-right: 12px;"></i>
+                            <span class="nav-text">Structure</span>
+                        </a>
+                        <a href="{{ path('app_groupe_index') }}" class="nav-link {{ app.request.attributes.get('_route') starts with 'app_groupe' ? 'active' : '' }}">
+                            <i class="fas fa-users-rectangle" style="width: 20px; margin-right: 12px;"></i>
+                            <span class="nav-text">Groupes & Équipes</span>
+                        </a>
+
+                        <div style="margin: 1.5rem 0 0.5rem 1rem; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Personnel</div>
+                        <a href="{{ path('app_employe_index') }}" class="nav-link {{ app.request.attributes.get('_route') starts with 'app_employe' ? 'active' : '' }}">
+                            <i class="fas fa-users" style="width: 20px; margin-right: 12px;"></i>
+                            <span class="nav-text">Employés</span>
+                        </a>
+
+                        <a href="{{ path('app_stagiaire_index') }}" class="nav-link {{ app.request.attributes.get('_route') starts with 'app_stagiaire' ? 'active' : '' }}">
+                            <i class="fas fa-user-graduate" style="width: 20px; margin-right: 12px;"></i>
+                            <span class="nav-text">Stagiaires</span>
+                        </a>
+
+                        <a href="{{ path('app_conge_index') }}" class="nav-link {{ app.request.attributes.get('_route') starts with 'app_conge' ? 'active' : '' }}">
+                            <i class="fas fa-calendar-alt" style="width: 20px; margin-right: 12px;"></i>
+                            <span class="nav-text">Congés</span>
+                        </a>
+                        <a href="{{ path('app_recrutement_index') }}" class="nav-link {{ app.request.attributes.get('_route') starts with 'app_recrutement' ? 'active' : '' }}">
+                            <i class="fas fa-bullhorn" style="width: 20px; margin-right: 12px;"></i>
+                            <span class="nav-text">Recrutement</span>
+                        </a>
+
+                        <a href="{{ path('app_presence_index') }}" class="nav-link {{ app.request.attributes.get('_route') starts with 'app_presence' ? 'active' : '' }}">
+                            <i class="fas fa-user-clock" style="width: 20px; margin-right: 12px;"></i>
+                            <span class="nav-text">Présences RH</span>
+                        </a>
+                        <a href="{{ path('app_planning') }}" class="nav-link {{ app.request.attributes.get('_route') == 'app_planning' ? 'active' : '' }}">
+                            <i class="fas fa-calendar-day" style="width: 20px; margin-right: 12px;"></i>
+                            <span class="nav-text">Planning</span>
+                        </a>
+
+                        {% if is_granted('FINANCE_MANAGE') %}
+                        <div style="margin: 1.5rem 0 0.5rem 1rem; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Finance & Perf</div>
+                        <a href="{{ path('app_finance_perf') }}" class="nav-link {{ app.request.attributes.get('_route') == 'app_finance_perf' ? 'active' : '' }}">
+                            <i class="fas fa-bullseye" style="width: 20px; margin-right: 12px;"></i>
+                            <span class="nav-text">KPI & Primes</span>
+                        </a>
+                        <a href="{{ path('app_finance_paie') }}" class="nav-link {{ app.request.attributes.get('_route') == 'app_finance_paie' ? 'active' : '' }}">
+                            <i class="fas fa-file-invoice-dollar" style="width: 20px; margin-right: 12px;"></i>
+                            <span class="nav-text">Paie</span>
+                        </a>
+                        <a href="{{ path('app_finance_avances') }}" class="nav-link {{ app.request.attributes.get('_route') starts with 'app_finance_avance' ? 'active' : '' }}">
+                            <i class="fas fa-hand-holding-dollar" style="width: 20px; margin-right: 12px;"></i>
+                            <span class="nav-text">Avances</span>
+                        </a>
+                        <a href="{{ path('app_cotisation_index') }}" class="nav-link {{ app.request.attributes.get('_route') starts with 'app_cotisation' ? 'active' : '' }}">
+                            <i class="fas fa-scale-balanced" style="width: 20px; margin-right: 12px;"></i>
+                            <span class="nav-text">Cotisations</span>
+                        </a>
+                        {% endif %}
+
+
+                        {% if is_granted('LOGISTIQUE_MANAGE') %}
+                        <div style="margin: 1.5rem 0 0.5rem 1rem; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Logistique</div>
+                        <a href="{{ path('app_logistique_navettes') }}" class="nav-link {{ app.request.attributes.get('_route') == 'app_logistique_navettes' ? 'active' : '' }}">
+                            <i class="fas fa-bus" style="width: 20px; margin-right: 12px;"></i>
+                            <span class="nav-text">Navettes</span>
+                        </a>
+                        {% endif %}
+
+                    </nav>
+
+                    <div style="margin-top: auto; padding: 1.5rem; border-top: 1px solid var(--border-color);">
+                        <div style="display: flex; align-items: center; padding: 0.75rem; background: var(--bg-main); border-radius: 12px; margin-bottom: 1rem;">
+                            <div style="width: 32px; height: 32px; background: var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 0.875rem;">
+                                {{ app.user.username|first|upper }}
+                            </div>
+                            <div style="margin-left: 12px; overflow: hidden;">
+                                <div style="font-size: 0.875rem; font-weight: 600; white-space: nowrap; text-overflow: ellipsis;">{{ app.user.username }}</div>
+                                <div style="font-size: 0.75rem; color: var(--text-muted);">{{ app.user.roles|first }}</div>
+                            </div>
+                        </div>
+                        <a href="{{ path('app_logout') }}" class="nav-link" style="color: #ef4444; margin: 0;">
+                            <i class="fas fa-sign-out-alt" style="width: 20px; margin-right: 12px;"></i>
+                            <span class="nav-text">Déconnexion</span>
+                        </a>
+                    </div>
+                </aside>
+
+            {% endif %}
+            
+            <main class="{% if app.user %}main-content{% endif %}">
+                {% if app.user %}
+                    <header style="margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h2 style="font-size: 1.5rem; font-weight: 700;">{% block page_title %}Aperçu{% endblock %}</h2>
+                            <p style="color: var(--text-muted); font-size: 0.875rem;">Bienvenue sur votre portail RH</p>
+                        </div>
+                        <div style="display: flex; gap: 1rem;">
+                            <div style="background: white; padding: 0.5rem 1rem; border-radius: 12px; border: 1px solid var(--border-color); display: flex; align-items: center; gap: 0.5rem;">
+                                <i class="far fa-calendar text-muted"></i>
+                                <span style="font-size: 0.875rem; font-weight: 500;">{{ "now"|date("d M Y") }}</span>
+                            </div>
+                        </div>
+                    </header>
+                    
+                    {% for label, messages in app.flashes %}
+                        {% for message in messages %}
+                            <div style="padding: 1rem; border-radius: 12px; margin-bottom: 1.5rem; background: {{ label == 'success' ? '#dcfce7' : '#fee2e2' }}; color: {{ label == 'success' ? '#166534' : '#991b1b' }}; border: 1px solid {{ label == 'success' ? '#bbf7d0' : '#fecaca' }};">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endfor %}
+                {% endif %}
+
+                {% block body %}{% endblock %}
+            </main>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Validation Paie - {{ mois }}/{{ annee }}{% endblock %}
+{% block page_title %}Finance & Paie{% endblock %}
+
+{% block body %}
+<div class="card">
+    <h3 style="margin-bottom: 2rem;">Aperçu de la Paie avant validation</h3>
+    <div class="alert alert-info">
+        <i class="fas fa-info-circle"></i> Voici une estimation des salaires basée sur les données actuelles (contrats, absences, primes).
+    </div>
+
+    <div class="table-container" style="margin-top: 1.5rem;">
+        <table>
+            <thead>
+                <tr>
+                    <th>Employé</th>
+                    <th>Salaire Base</th>
+                    <th>Primes (+)</th>
+                    <th>Avances (-)</th>
+                    <th>Net à Payer (Est.)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in previews %}
+                    <tr>
+                        <td style="font-weight: 600;">{{ item.employe.nom }} {{ item.employe.prenom }}</td>
+                        <td>{{ item.salaire|number_format(0, ',', ' ') }} Ar</td>
+                        <td style="color: #10b981;">+ {{ item.primes|number_format(0, ',', ' ') }} Ar</td>
+                        <td style="color: #ef4444;">- {{ item.avances|number_format(0, ',', ' ') }} Ar</td>
+                        <td style="font-weight: 700;">{{ (item.salaire + item.primes - item.avances)|number_format(0, ',', ' ') }} Ar</td>
+                    </tr>
+                {% else %}
+                    <tr><td colspan="5" style="text-align: center;">Aucun employé éligible.</td></tr>
+                {% endfor %}
+
+            </tbody>
+        </table>
+    </div>
+
+    <div style="margin-top: 2rem; display: flex; justify-content: flex-end; gap: 1rem;">
+        <a href="{{ path('app_finance_paie') }}" class="btn" style="background: var(--bg-main);">Annuler</a>
+        <form action="{{ path('app_finance_paie_gen') }}" method="post">
+            <button class="btn btn-primary">Valider et Générer la Paie</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

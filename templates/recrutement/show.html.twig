@@ -1,0 +1,225 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails Recrutement - {{ recrutement.poste.libelle }}{% endblock %}
+{% block page_title %}Gestion des candidatures{% endblock %}
+
+{% block body %}
+<div style="display: grid; grid-template-columns: 1fr 2fr; gap: 2rem;">
+    <!-- Sidebar: Campaign Details & Add Candidate Form -->
+    <div style="display: flex; flex-direction: column; gap: 2rem;">
+        <div class="card">
+            <h3 style="font-weight: 700; margin-bottom: 1.5rem;">Détails de l'offre</h3>
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+                <div>
+                    <label style="display: block; font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem;">Poste</label>
+                    <div style="font-weight: 700; font-size: 1.1rem; color: var(--primary);">{{ recrutement.poste.libelle }}</div>
+                </div>
+                <div>
+                    <label style="display: block; font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem;">Statut de la campagne</label>
+                    <span class="badge {{ recrutement.statut == 'Ouvert' ? 'badge-success' : 'badge-danger' }}">{{ recrutement.statut }}</span>
+                </div>
+                <div>
+                    <label style="display: block; font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem;">Date limite</label>
+                    <div style="font-weight: 600;">{{ recrutement.dateFin|date('d/m/Y') }}</div>
+                </div>
+                {% if recrutement.suggestions %}
+                <div>
+                    <label style="display: block; font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem;">Critères</label>
+                    <div style="font-size: 0.875rem; line-height: 1.5; color: var(--text-main);">{{ recrutement.suggestions|nl2br }}</div>
+                </div>
+                {% endif %}
+            </div>
+            <div style="margin-top: 2rem;">
+                <a href="{{ path('app_recrutement_edit', {'id': recrutement.id}) }}" class="btn" style="background: var(--bg-main); width: 100%;">Modifier l'offre</a>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3 style="font-weight: 700; margin-bottom: 0.5rem;">Candidature Rapide</h3>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1.5rem;">Ajouter manuellement un dossier de candidature.</p>
+            
+            {{ form_start(form, {'attr': {'enctype': 'multipart/form-data', 'data-turbo': 'false'}}) }}
+                <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+                    
+                    {# Rangée 1 : Identité #}
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div>{{ form_row(form.nom, {'label': 'Nom', 'attr': {'class': 'form-input'}}) }}</div>
+                        <div>{{ form_row(form.prenom, {'label': 'Prénom', 'attr': {'class': 'form-input'}}) }}</div>
+                    </div>
+                    
+                    {# Rangée 2 : Contact #}
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div>{{ form_row(form.email, {'label': 'Email', 'attr': {'class': 'form-input'}}) }}</div>
+                        <div>{{ form_row(form.contact, {'label': 'Téléphone', 'attr': {'class': 'form-input'}}) }}</div>
+                    </div>
+
+                    {# Rangée 3 : Perso #}
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div>{{ form_row(form.situationMatrimoniale, {'label': 'Situation', 'attr': {'class': 'form-input'}}) }}</div>
+                        <div>{{ form_row(form.dateNaissance, {'label': 'Date de Naissance', 'attr': {'class': 'form-input'}}) }}</div>
+                    </div>
+
+                    {# Rangée 4 : Adresse #}
+                    <div>{{ form_row(form.adresse, {'label': 'Adresse fixe', 'attr': {'class': 'form-input'}}) }}</div>
+
+                    {# Rangée 5 : CV #}
+                    <div>{{ form_row(form.cvFile, {'label': 'Dossier CV (PDF/Image)', 'attr': {'class': 'form-input'}}) }}</div>
+
+                    <div style="margin-top: 1rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color);">
+                        <button type="submit" class="btn btn-primary" style="width: 100%; height: 48px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px;">
+                            <i class="fas fa-save" style="margin-right: 8px;"></i> ENREGISTRER LA CANDIDATURE
+                        </button>
+                    </div>
+                </div>
+            {{ form_end(form) }}
+        </div>
+
+
+
+    </div>
+
+    <!-- Main: Candidates List -->
+    <div class="card">
+        <h3 style="font-weight: 700; margin-bottom: 2rem;">Candidatures reçues ({{ candidats|length }})</h3>
+        
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Candidat</th>
+                        <th>Documents</th>
+                        <th>Statut</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cand in candidats %}
+                        <tr>
+                            <td>
+                                <div style="font-weight: 600;">{{ cand.nom }} {{ cand.prenom }}</div>
+                                <div style="font-size: 0.75rem; color: var(--text-muted);">{{ cand.email }}</div>
+                            </td>
+                            <td>
+                                <button type="button" onclick="openModal('{{ asset('uploads/' ~ cand.cvPath) }}', '{{ cand.cvPath|split('.')|last == 'pdf' ? 'pdf' : 'image' }}')" class="btn" style="background: var(--bg-main); padding: 0.4rem 0.8rem; font-size: 0.75rem; border-radius: 6px;" data-turbo="false">
+                                    <i class="fas fa-search-plus" style="margin-right: 5px;"></i> Voir CV
+                                </button>
+                            </td>
+                            <td>
+                                <span class="badge {{ cand.statut == 'Accepté' or cand.statut == 'Embauché' ? 'badge-success' : (cand.statut == 'Refusé' ? 'badge-danger' : (cand.statut == 'Présélectionné' ? 'badge-primary' : 'badge-warning')) }}">
+                                    {{ cand.statut }}
+                                </span>
+                            </td>
+                            <td>
+                                <div style="display: flex; gap: 0.25rem; align-items: center;">
+                                    <a href="{{ path('app_candidat_show_detail', {'id': cand.id}) }}" class="btn" style="background: #f1f5f9; color: #475569; padding: 0.4rem; border-radius: 6px;" title="Détails du profil">
+                                        <i class="fas fa-eye fa-xs"></i>
+                                    </a>
+                                    
+                                    {% if cand.statut == 'Accepté' %}
+                                    <a href="{{ path('app_candidat_hire', {'id': cand.id}) }}" class="btn" style="background: #eef2ff; color: #4338ca; padding: 0.4rem; border-radius: 6px;" title="Embaucher comme employé">
+                                        <i class="fas fa-user-check fa-xs"></i>
+                                    </a>
+                                    {% endif %}
+
+                                    {% if cand.statut == 'En attente' or cand.statut == 'Présélectionné' %}
+                                        <div style="width: 1px; height: 20px; background: #e2e8f0; margin: 0 0.25rem;"></div>
+
+                                        <form action="{{ path('app_candidat_status', {'id': cand.id, 'status': 'Présélectionné'}) }}" method="post" data-turbo="false" style="display: {{ cand.statut == 'Présélectionné' ? 'none' : 'inline' }};">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('change-status' ~ cand.id) }}">
+                                            <button type="submit" class="btn" style="background: #f0f9ff; color: #0369a1; padding: 0.4rem; border-radius: 6px;" title="Présélectionner">
+                                                <i class="fas fa-clipboard-list fa-xs"></i>
+                                            </button>
+                                        </form>
+                                        <form action="{{ path('app_candidat_status', {'id': cand.id, 'status': 'Accepté'}) }}" method="post" data-turbo="false" style="display: inline;">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('change-status' ~ cand.id) }}">
+                                            <button type="submit" class="btn" style="background: #f0fdf4; color: #166534; padding: 0.4rem; border-radius: 6px;" title="Accepter">
+                                                <i class="fas fa-check fa-xs"></i>
+                                            </button>
+                                        </form>
+                                        <form action="{{ path('app_candidat_status', {'id': cand.id, 'status': 'Refusé'}) }}" method="post" data-turbo="false" style="display: inline;">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('change-status' ~ cand.id) }}">
+                                            <button type="submit" class="btn" style="background: #fef2f2; color: #991b1b; padding: 0.4rem; border-radius: 6px;" title="Refuser">
+                                                <i class="fas fa-times fa-xs"></i>
+                                            </button>
+                                        </form>
+                                    {% endif %}
+                                </div>
+
+
+                            </td>
+
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="4" style="text-align: center; padding: 3rem; color: var(--text-muted);">
+                                Aucun candidat pour le moment.
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Structure for CV Preview -->
+<div id="previewModal" style="display: none; position: fixed; inset: 0; z-index: 9999; background: rgba(0,0,0,0.5); backdrop-filter: blur(8px); align-items: center; justify-content: center; padding: 2rem;">
+    <div style="background: white; border-radius: 20px; width: 100%; max-width: 950px; height: 90vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.3);">
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 1.5rem; border-bottom: 1px solid #f1f5f9;">
+            <h3 id="modalTitle" style="font-weight: 700; margin: 0;">Aperçu du CV</h3>
+            <button type="button" onclick="closeModal()" style="background: #f1f5f9; border: none; padding: 0.5rem; width: 32px; height: 32px; border-radius: 8px; cursor: pointer; color: #64748b; display: flex; align-items: center; justify-content: center;">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div id="modalContent" style="flex: 1; overflow: hidden; display: flex; justify-content: center; background: #f8fafc; position: relative;">
+            <!-- Content loaded via JS -->
+        </div>
+    </div>
+</div>
+
+<script>
+    function openModal(url, type) {
+        const modal = document.getElementById('previewModal');
+        const content = document.getElementById('modalContent');
+        const title = document.getElementById('modalTitle');
+        
+        content.innerHTML = ''; 
+        
+        if (type === 'image') {
+            title.innerText = 'Aperçu du CV - Image';
+            content.style.overflow = 'auto';
+            content.innerHTML = `<img src="${url}" style="max-width: 100%; border-radius: 12px; margin: auto; display: block; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);">`;
+        } else {
+            title.innerText = 'Aperçu du CV - Document PDF';
+            content.style.overflow = 'hidden';
+            // Using an iframe is often more reliable for PDFs than an object tag
+            content.innerHTML = `
+                <iframe src="${url}" style="width: 100%; height: 100%; border: none;"></iframe>
+                <div style="position: absolute; bottom: 10px; right: 10px; display: none;">
+                     <a href="${url}" target="_blank" class="btn btn-primary" data-turbo="false">Ouvrir dans un nouvel onglet</a>
+                </div>
+            `;
+        }
+        
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+        const modal = document.getElementById('previewModal');
+        const content = document.getElementById('modalContent');
+        content.innerHTML = ''; // This stops the iframe/video/etc
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+
+    window.onclick = function(event) {
+        const modal = document.getElementById('previewModal');
+        if (event.target == modal) {
+            closeModal();
+        }
+    }
+</script>
+
+
+{% endblock %}
