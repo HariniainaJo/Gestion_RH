@@ -1,9 +1,9 @@
 --mdp admin=admin123
 --mdp employe=employe123
 
-INSERT INTO utilisateur (username, mot_de_passe, actif, id_role) VALUES
-('admin', '$2y$13$H9XDfDQDrFMSjy1JY0gwJuycyJtAsfHCBWd6mo76.1UADY9WL7J8i', TRUE, (SELECT id_role FROM role WHERE nom_role='ADMIN')),
-('employe1', '$2y$13$lXnExJLKRVEAGCXGDQm0POLEne3/kwB4hvmRvENnyQ0GZGQozqbsW', TRUE, (SELECT id_role FROM role WHERE nom_role='EMPLOYE'));
+INSERT INTO utilisateur (username, mot_de_passe, actif, id_role, date_creation) VALUES
+('admin', '$2y$13$H9XDfDQDrFMSjy1JY0gwJuycyJtAsfHCBWd6mo76.1UADY9WL7J8i', TRUE, (SELECT id_role FROM role WHERE nom_role='ADMIN'), NOW()),
+('employe1', '$2y$13$lXnExJLKRVEAGCXGDQm0POLEne3/kwB4hvmRvENnyQ0GZGQozqbsW', TRUE, (SELECT id_role FROM role WHERE nom_role='EMPLOYE'), NOW());
 
 -- =====================
 -- Direction

@@ -7,7 +7,6 @@ use App\Entity\EmployePrime;
 use App\Entity\Paye;
 use App\Repository\EmployeKpiRepository;
 use App\Repository\EmployeRepository;
-use App\Repository\PrimeKpiRepository;
 use App\Repository\PrimeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 

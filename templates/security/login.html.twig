@@ -3,35 +3,91 @@
 {% block title %}Connexion - Zanova GRH{% endblock %}
 
 {% block body %}
-<div class="auth-container">
-    <div class="auth-card">
-        <div class="auth-logo">
-            <h1>ZANOVA GRH</h1>
-            <p style="color: var(--text-muted); font-size: 0.875rem; margin-top: 0.5rem;">Gestion des Ressources Humaines</p>
+<div class="auth-shell">
+    <div class="auth-brand-panel">
+        <svg class="deco" viewBox="0 0 440 640" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <g stroke="#2A3B4A" stroke-width="1" fill="none">
+                <line x1="60" y1="420" x2="60" y2="470"/>
+                <line x1="60" y1="470" x2="20" y2="520"/>
+                <line x1="60" y1="470" x2="100" y2="520"/>
+                <line x1="60" y1="470" x2="140" y2="540"/>
+                <line x1="140" y1="340" x2="140" y2="400"/>
+                <line x1="140" y1="400" x2="60" y2="420"/>
+                <line x1="140" y1="400" x2="220" y2="430"/>
+                <line x1="380" y1="80" x2="380" y2="140"/>
+                <line x1="380" y1="140" x2="330" y2="190"/>
+                <line x1="380" y1="140" x2="420" y2="200"/>
+            </g>
+            <g fill="#39506A">
+                <circle cx="60" cy="420" r="4"/><circle cx="20" cy="520" r="4"/><circle cx="100" cy="520" r="4"/><circle cx="140" cy="540" r="4"/>
+                <circle cx="140" cy="340" r="4"/><circle cx="140" cy="400" r="4"/><circle cx="220" cy="430" r="4"/>
+                <circle cx="380" cy="80" r="4"/><circle cx="380" cy="140" r="4"/><circle cx="330" cy="190" r="4"/><circle cx="420" cy="200" r="4"/>
+            </g>
+            <circle cx="60" cy="420" r="9" fill="none" stroke="#18A957" stroke-width="1.4"/>
+            <circle cx="140" cy="400" r="9" fill="none" stroke="#18A957" stroke-width="1.4"/>
+        </svg>
+
+        <div class="abp-top">
+            <div class="abp-mark">Z</div>
+            <div>
+                <div class="abp-name">ZANOVA GRH</div>
+                <div class="abp-sub">Portail Ressources Humaines</div>
+            </div>
         </div>
 
-        <form method="post">
-            {% if error %}
-                <div style="background: #fee2e2; color: #991b1b; padding: 0.75rem; border-radius: 8px; margin-bottom: 1rem; font-size: 0.875rem;">
-                    {{ error.messageKey|trans(error.messageData, 'security') }}
+        <div class="abp-mid">
+            <div class="abp-kicker">PORTAIL INTERNE</div>
+            <h1>Toute votre direction RH, une seule plateforme.</h1>
+            <p>Employés, congés, paie, recrutement et performance : centralisés, tracés et sécurisés pour votre entreprise.</p>
+            <div class="abp-feats">
+                <div class="abp-feat">
+                    <div class="abp-feat-ic"><i class="fas fa-sitemap"></i></div>
+                    Structure, équipes et postes en un seul endroit
                 </div>
-            {% endif %}
-
-            <div class="form-group">
-                <label for="inputUsername" class="form-label">Nom d'utilisateur</label>
-                <input type="text" value="{{ last_username }}" name="_username" id="inputUsername" class="form-input" autocomplete="username" required autofocus placeholder="admin">
+                <div class="abp-feat">
+                    <div class="abp-feat-ic"><i class="fas fa-file-invoice-dollar"></i></div>
+                    Paie et primes calculées automatiquement
+                </div>
+                <div class="abp-feat">
+                    <div class="abp-feat-ic"><i class="fas fa-chart-line"></i></div>
+                    Indicateurs RH à jour en permanence
+                </div>
             </div>
-            <div class="form-group">
-                <label for="inputPassword" class="form-label">Mot de passe</label>
-                <input type="password" name="_password" id="inputPassword" class="form-input" autocomplete="current-password" required placeholder="••••••••">
+        </div>
+
+        <div class="abp-foot">ZANOVA GRH — GESTION DES RESSOURCES HUMAINES</div>
+    </div>
+
+    <div class="auth-form-panel">
+        <div class="auth-card">
+            <div class="auth-logo">
+                <h1>Connexion</h1>
+                <p>Accédez à votre espace RH</p>
             </div>
 
-            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+            <form method="post">
+                {% if error %}
+                    <div class="alert alert-danger">
+                        {{ error.messageKey|trans(error.messageData, 'security') }}
+                    </div>
+                {% endif %}
 
-            <button class="btn btn-primary" type="submit">
-                Se connecter
-            </button>
-        </form>
+                <div class="form-group">
+                    <label for="inputUsername" class="form-label">Nom d'utilisateur</label>
+                    <input type="text" value="{{ last_username }}" name="_username" id="inputUsername" class="form-input" autocomplete="username" required autofocus placeholder="admin">
+                </div>
+                <div class="form-group">
+                    <label for="inputPassword" class="form-label">Mot de passe</label>
+                    <input type="password" name="_password" id="inputPassword" class="form-input" autocomplete="current-password" required placeholder="••••••••">
+                </div>
+
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                <button class="btn btn-primary" type="submit">
+                    Se connecter
+                </button>
+            </form>
+        </div>
     </div>
 </div>
 {% endblock %}
